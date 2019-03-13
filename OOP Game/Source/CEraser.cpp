@@ -66,7 +66,7 @@ namespace game_framework {
 		if (isMovingRight)
 		{
 			x += STEP_SIZE;
-			//map.setSX(map.getSX() + STEP_SIZE);
+			m->setSX(m->getSX() + STEP_SIZE);
 		}
 
 		if (isMovingUp)
@@ -104,9 +104,9 @@ namespace game_framework {
 		x = nx; y = ny;
 	}
 
-	void CEraser::OnShow()
+	void CEraser::OnShow(CGameMap *m)
 	{
-		animation.SetTopLeft(x, y);
+		animation.SetTopLeft(m->getScreenX(320), m->getScreenY(240));
 		animation.OnShow();
 	}
 }

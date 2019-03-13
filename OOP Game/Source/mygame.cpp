@@ -271,7 +271,7 @@ namespace game_framework
 	{
 		gamemap.OnShow();
 		background.ShowBitmap();
-		eraser.OnShow();
+		eraser.OnShow(&gamemap);
 		
 	}
 

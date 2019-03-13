@@ -13,7 +13,7 @@ namespace game_framework {
 		void Initialize();				// sets init. pos. & sets all isMoving to false 
 		void LoadBitmap();				// 
 		void OnMove(CGameMap *m);					// 
-		void OnShow();					// 
+		void OnShow(CGameMap *m);					// 
 		void SetMovingDown(bool flag);	// isMovingDown accessor function
 		void SetMovingLeft(bool flag);	// isMovingLeft accessor function
 		void SetMovingRight(bool flag); // isMovingRight accessor function
