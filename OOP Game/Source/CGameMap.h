@@ -1,3 +1,6 @@
+#ifndef CGAMEMAP_H
+#define CGAMEMAP_H
+
 namespace game_framework {
 	
 	class CGameMap
@@ -20,6 +23,7 @@ namespace game_framework {
 	};
 }
 
+#endif
 
 
 

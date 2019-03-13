@@ -172,8 +172,8 @@ namespace game_framework
 		help.SetTopLeft(0, SIZE_Y - help.Height());	
 		
 		//
-		map.setSX(0);
-		map.setSY(0);
+		gamemap.setSX(0);
+		gamemap.setSY(0);
 		//
 		//CAudio::Instance()->Play(AUDIO_LAKE, true);		
 		
@@ -186,7 +186,7 @@ namespace game_framework
 			background.SetTopLeft(60, -background.Height());
 		background.SetTopLeft(background.Left(), background.Top() + 1);
 		//
-		eraser.OnMove();
+		eraser.OnMove(&gamemap);
 		//if (hits_left.GetInteger() <= 0) 	
 		//GotoGameState(GAME_STATE_OVER);
 	}
@@ -198,7 +198,7 @@ namespace game_framework
 		eraser.LoadBitmap();
 		background.LoadBitmap(IDB_BACKGROUND);
 		//
-		map.LoadBitmap();
+		gamemap.LoadBitmap();
 		//
 		ShowInitProgress(50);	// Display Initialization Progress at 50%
 		Sleep(300); 
@@ -269,7 +269,7 @@ namespace game_framework
 
 	void CGameStateRun::OnShow()
 	{
-		map.OnShow();
+		gamemap.OnShow();
 		background.ShowBitmap();
 		eraser.OnShow();
 		

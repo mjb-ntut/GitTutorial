@@ -8,6 +8,7 @@
 
 namespace game_framework {
 	/****************** CEraser Class Definition *****************/
+	class CGameMap;
 	CEraser::CEraser()
 	{
 		//Initialize() sets CAnimation to initial position.
@@ -52,20 +53,20 @@ namespace game_framework {
 		animation.AddBitmap(IDB_ERASER2, RGB(255, 255, 255));
 	}
 
-	void CEraser::OnMove(CGameMap* map)
+	void CEraser::OnMove(CGameMap* m)
 	{
 		const int STEP_SIZE = 2;
 		animation.OnMove();
 		if (isMovingLeft)
 		{
 			x -= STEP_SIZE;
-			map->setSX(map->getSX() - STEP_SIZE);
+			m->setSX(m->getSX() - STEP_SIZE);
 		}
 
 		if (isMovingRight)
 		{
 			x += STEP_SIZE;
-			map.setSX(map.getSX() + STEP_SIZE);
+			//map.setSX(map.getSX() + STEP_SIZE);
 		}
 
 		if (isMovingUp)

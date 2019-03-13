@@ -85,7 +85,7 @@ namespace game_framework {
 		void OnMove();									//
 		void OnShow();									//
 	private:
-		CGameMap		map;
+		CGameMap		gamemap;
 		CMovingBitmap	background;
 		CMovingBitmap	help;			
 		CMovingBitmap	corner;	

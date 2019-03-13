@@ -132,13 +132,9 @@ IDR_MAINFRAME           BITMAP                  "..\\res\\Toolbar.bmp"
 
 IDB_BORDER              BITMAP                  "..\\res\\bitmap3.bmp"
 
-IDB_PRACTICE            BITMAP                  "C:\\Users\\Matthew\\Downloads\\RES\\pug.bmp"
-
 IDB_BLUE                BITMAP                  "..\\res\\bmp00001.bmp"
 
 IDB_GREEN               BITMAP                  "..\\res\\bitmap4.bmp"
-
-IDB_BBALL               BITMAP                  "C:\\Users\\Matthew\\Downloads\\RES\\ball.bmp"
 
 IDB_BACKGROUND2         BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan-IceMan-StartPage.bmp"
 

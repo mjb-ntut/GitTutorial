@@ -12,7 +12,7 @@ namespace game_framework {
 		int  GetY2();					// bottom-right corner y-coordinate
 		void Initialize();				// sets init. pos. & sets all isMoving to false 
 		void LoadBitmap();				// 
-		void OnMove();					// 
+		void OnMove(CGameMap *m);					// 
 		void OnShow();					// 
 		void SetMovingDown(bool flag);	// isMovingDown accessor function
 		void SetMovingLeft(bool flag);	// isMovingLeft accessor function
