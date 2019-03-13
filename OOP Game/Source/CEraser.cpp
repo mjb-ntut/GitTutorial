@@ -60,13 +60,13 @@ namespace game_framework {
 		if (isMovingLeft)
 		{
 			x -= STEP_SIZE;
-			m->setSX(m->getSX() - STEP_SIZE);
+			m->setSX(m->getSX() + STEP_SIZE);
 		}
 
 		if (isMovingRight)
 		{
 			x += STEP_SIZE;
-			m->setSX(m->getSX() + STEP_SIZE);
+			m->setSX(m->getSX() - STEP_SIZE);
 		}
 
 		if (isMovingUp)
