@@ -220,5 +220,11 @@
     <Image Include="..\Documents\OOP Lab\Ice Man Level Map\Test-Map.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan-IceMan-StartPage.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Test-Map.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
