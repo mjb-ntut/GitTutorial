@@ -1,5 +1,5 @@
 /*
- * gamelib.h: 本檔案儲遊戲相關的class的interface
+ * gamelib.h: 
  * Copyright (C) 2002-2008 Woei-Kae Chen <wkc@csie.ntut.edu.tw>
  *
  * This file is part of game, a free game development framework for windows.
@@ -90,11 +90,7 @@ enum GAME_STATES {
 #include <map>
 using namespace std;
 
-/////////////////////////////////////////////////////////////////////////////
-// 回報程式錯誤用的macro
-// 備註：這裡使用macro以便保留檔案名稱及行號，利於debug。
-/////////////////////////////////////////////////////////////////////////////
-
+/****************** GAME_ASSERT Macro Header *****************/
 #define GAME_ASSERT(boolexp,str)											\
 		if (!(boolexp)) {													\
 			int id;															\
@@ -111,230 +107,199 @@ using namespace std;
 		}
 
 namespace game_framework {
+	/****************** CSpecialEffect Class Declaration *****************/
+	class CSpecialEffect {
+	public:
+		static void  SetCurrentTime();					// 儲存目前的時間至ctime
+		static DWORD GetEllipseTime();					// 讀取目前的時間 - ctime
+		static int   GetCurrentTimeCount();				// 讀取儲存ctime的次數
+		static void  Delay(DWORD ms);					// 延遲 x ms
+		static void  DelayFromSetCurrentTime(DWORD ms);	// 自ctime起算，延遲 x ms
+	private:
+		static DWORD ctime;
+		static int	 ctimeCount;
+	};
 
-/////////////////////////////////////////////////////////////////////////////
-// 這個class提供時間、錯誤等控制
-// 一般的遊戲並不需直接操作這個物件，因此可以不管這個class的使用方法
-/////////////////////////////////////////////////////////////////////////////
+	/****************** CDDraw Class Declaration *****************/
+	class CDDraw {
+		friend class CMovingBitmap;
+	public:
+		~CDDraw();
+		static void  BltBackColor(DWORD);		// 將Back plain全部著上指定的顏色
+		static void  BltBackToPrimary();		// 將Back plain貼至Primary plain
+		static CDC*  GetBackCDC();				// 取得Back Plain的DC (device context)
+		static void  GetClientRect(CRect &r);	// 取得設定的解析度
+		static void  Init(int, int);			// Initialize direct draw
+		static void  ReleaseBackCDC();			// 放掉Back Plain的DC (device context)
+		static bool  SetFullScreen(bool);		// 設定為全螢幕模式/視窗模式
+		static bool  IsFullScreen();			// 回答是否為全螢幕模式/視窗模式
+	private:
+		CDDraw();								// private constructor
+		static void  BltBitmapToBack(unsigned SurfaceID, int x, int y);
+		static void  BltBitmapToBack(unsigned SurfaceID, int x, int y, double factor);
+		static void  BltBitmapToBitmap(unsigned SourceID, unsigned TargetID, int x, int y);
+		static void	 CheckDDFail(char *s);
+		static bool  CreateSurface();
+		static bool  CreateSurfaceFullScreen();
+		static bool  CreateSurfaceWindowed();
+		static void  LoadBitmap(int i, int IDB_BITMAP);
+		static void  LoadBitmap(int i, char *filename);
+		static DWORD MatchColorKey(LPDIRECTDRAWSURFACE lpDDSurface, COLORREF color);
+		static int   RegisterBitmap(int IDB_BITMAP, COLORREF ColorKey);
+		static int   RegisterBitmap(char *filename, COLORREF ColorKey);
+		static void  ReleaseSurface();
+		static void  RestoreSurface();
+		static void  SetColorKey(unsigned SurfaceID, COLORREF color);
+		static HDC					hdc;
+		static CDC					cdc;
+		static CView				*pCView;
+		static LPDIRECTDRAW2		lpDD;
+		static LPDIRECTDRAWCLIPPER	lpClipperPrimary;
+		static LPDIRECTDRAWCLIPPER	lpClipperBack;
+		static LPDIRECTDRAWSURFACE	lpDDSPrimary;
+		static LPDIRECTDRAWSURFACE	lpDDSBack;
+		static vector<LPDIRECTDRAWSURFACE>	lpDDS;
+		static HRESULT				ddrval;
+		static vector<int>			BitmapID;
+		static vector<string>		BitmapName;
+		static vector<CRect>		BitmapRect;
+		static vector<COLORREF>		BitmapColorKey;
+		static bool					fullscreen;
+		static CDDraw				ddraw;
+		static int					size_x, size_y;
+	};
 
-class CSpecialEffect {
-public:
-	static void  SetCurrentTime();					// 儲存目前的時間至ctime
-	static DWORD GetEllipseTime();					// 讀取目前的時間 - ctime
-	static int   GetCurrentTimeCount();				// 讀取儲存ctime的次數
-	static void  Delay(DWORD ms);					// 延遲 x ms
-	static void  DelayFromSetCurrentTime(DWORD ms);	// 自ctime起算，延遲 x ms
-private:
-	static DWORD ctime;
-	static int	 ctimeCount;
-};
+	/****************** CMovingBitmap Class Declaration *****************/
+	class CMovingBitmap {
+	public:
+		CMovingBitmap();
+		int   Height();						// 取得圖形的高度
+		int   Left();						// 取得圖形的左上角的 x 座標
+		void  LoadBitmap(int, COLORREF = CLR_INVALID);		// 載入圖，指定圖的編號(resource)及透明色
+		void  LoadBitmap(char *, COLORREF = CLR_INVALID);	// 載入圖，指定圖的檔名及透明色
+		void  SetTopLeft(int, int);			// Top-Left Corner Coordinate (x,y)
+		void  ShowBitmap();					// 將圖貼到螢幕
+		void  ShowBitmap(double factor);	// 將圖貼到螢幕 factor < 1時縮小，>1時放大。注意：需要VGA卡硬體的支援，否則會很慢
+		void  ShowBitmap(CMovingBitmap &);	// 將圖貼到到另一張圖上 (僅供特殊用途)
+		int   Top();						// 取得圖形的左上角的 y 座標
+		int   Width();						// 取得圖形的寬度
+	protected:
+		CRect    location;			// location of the bitmap
+		bool     isBitmapLoaded;	// whether a bitmap has been loaded
+		unsigned SurfaceID;			// the surface id of this bitmap
+	};
 
-/////////////////////////////////////////////////////////////////////////////
-// 這個class會建立DirectDraw物件，以提供其他class使用
-// 一般的遊戲並不需直接操作這個物件，因此可以不管這個class的使用方法
-/////////////////////////////////////////////////////////////////////////////
+	/****************** CAnimation Class Declaration *****************/
+	class CAnimation {
+	public:
+		CAnimation(int = 10);				// Constructor
+		void  AddBitmap(int, COLORREF = CLR_INVALID);
+		void  AddBitmap(char *, COLORREF = CLR_INVALID);
+		int   GetCurrentBitmapNumber();	// 
+		int   Height();					//
+		bool  IsFinalBitmap();			//
+		int   Left();					// 
+		void  OnMove();					// 
+		void  OnShow();					// 
+		void  Reset();					// 
+		void  SetDelayCount(int);		// 
+		void  SetTopLeft(int, int);		// 
+		int   Top();					// 
+		int   Width();					//
+	private:
+		list<CMovingBitmap>				bmp;			// CMovingBitmap List
+		list<CMovingBitmap>::iterator	bmp_iter;		// CMovingBitmap List Iterator
+		int								bmp_counter;	// Current Index of CCMovingBitmap List
+		int								delay_counter;	// 
+		int								delay_count;	// 
+		int								x, y;			// 
+	};
 
-class CDDraw {
-	friend class CMovingBitmap;
-public:
-	~CDDraw();
-	static void  BltBackColor(DWORD);		// 將Back plain全部著上指定的顏色
-	static void  BltBackToPrimary();		// 將Back plain貼至Primary plain
-	static CDC*  GetBackCDC();				// 取得Back Plain的DC (device context)
-	static void  GetClientRect(CRect &r);	// 取得設定的解析度
-	static void  Init(int, int);			// Initialize direct draw
-	static void  ReleaseBackCDC();			// 放掉Back Plain的DC (device context)
-	static bool  SetFullScreen(bool);		// 設定為全螢幕模式/視窗模式
-	static bool  IsFullScreen();			// 回答是否為全螢幕模式/視窗模式
-private:
-	CDDraw();								// private constructor
-	static void  BltBitmapToBack(unsigned SurfaceID, int x, int y);
-	static void  BltBitmapToBack(unsigned SurfaceID, int x, int y, double factor);
-	static void  BltBitmapToBitmap(unsigned SourceID, unsigned TargetID, int x, int y);
-	static void	 CheckDDFail(char *s);
-	static bool  CreateSurface();
-	static bool  CreateSurfaceFullScreen();
-	static bool  CreateSurfaceWindowed();
-	static void  LoadBitmap(int i, int IDB_BITMAP);
-	static void  LoadBitmap(int i, char *filename);
-	static DWORD MatchColorKey(LPDIRECTDRAWSURFACE lpDDSurface, COLORREF color);
-	static int   RegisterBitmap(int IDB_BITMAP, COLORREF ColorKey);
-	static int   RegisterBitmap(char *filename, COLORREF ColorKey);
-	static void  ReleaseSurface();
-	static void  RestoreSurface();
-	static void  SetColorKey(unsigned SurfaceID, COLORREF color);
-    static HDC					hdc;
-	static CDC					cdc;
-	static CView				*pCView;
-    static LPDIRECTDRAW2		lpDD;
-	static LPDIRECTDRAWCLIPPER	lpClipperPrimary;   
-	static LPDIRECTDRAWCLIPPER	lpClipperBack;   
-	static LPDIRECTDRAWSURFACE	lpDDSPrimary;
-	static LPDIRECTDRAWSURFACE	lpDDSBack;
-	static vector<LPDIRECTDRAWSURFACE>	lpDDS;
-    static HRESULT				ddrval;
-	static vector<int>			BitmapID;
-	static vector<string>		BitmapName;
-	static vector<CRect>		BitmapRect;
-	static vector<COLORREF>		BitmapColorKey;
-	static bool					fullscreen;
-	static CDDraw				ddraw;
-	static int					size_x, size_y;
-};
+	/****************** CInteger Class Declaration *****************/
+	class CInteger {
+	public:
+		CInteger(int = 5);			// default 5 digits
+		void Add(int n);			// 增加整數值
+		int  GetInteger();			// 回傳整數值
+		void LoadBitmap();			// 載入0..9及負號之圖形
+		void SetInteger(int);		// 設定整數值
+		void SetTopLeft(int, int);	// 將動畫的左上角座標移至 (x,y)
+		void ShowBitmap();			// 將動畫貼到螢幕
+	private:
+		const int NUMDIGITS;			// 共顯示NUMDIGITS個位數
+		static CMovingBitmap digit[11]; // 儲存0..9及負號之圖形(bitmap)
+		int x, y;						// 顯示的座標
+		int n;							// 整數值
+		bool isBmpLoaded;				// 是否已經載入圖形
+	};
 
-/////////////////////////////////////////////////////////////////////////////
-// 這個class提供動態(可以移動)的圖形
-// 每個Public Interface的用法都要懂，Implementation可以不懂
-/////////////////////////////////////////////////////////////////////////////
+	/****************** CGameState Class Forward Declarations *****************/
+	class CGame;
+	class CGameStateInit;
+	class CGameStateRun;
+	class CGameStateOver;
 
-class CMovingBitmap {
-public:
-	CMovingBitmap();
-	int   Height();						// 取得圖形的高度
-	int   Left();						// 取得圖形的左上角的 x 座標
-	void  LoadBitmap(int,COLORREF=CLR_INVALID);		// 載入圖，指定圖的編號(resource)及透明色
-	void  LoadBitmap(char *,COLORREF=CLR_INVALID);	// 載入圖，指定圖的檔名及透明色
-	void  SetTopLeft(int,int);			// Top-Left Corner Coordinate (x,y)
-	void  ShowBitmap();					// 將圖貼到螢幕
-	void  ShowBitmap(double factor);	// 將圖貼到螢幕 factor < 1時縮小，>1時放大。注意：需要VGA卡硬體的支援，否則會很慢
-	void  ShowBitmap(CMovingBitmap &);	// 將圖貼到到另一張圖上 (僅供特殊用途)
-	int   Top();						// 取得圖形的左上角的 y 座標
-	int   Width();						// 取得圖形的寬度
-protected:
-	CRect    location;			// location of the bitmap
-	bool     isBitmapLoaded;	// whether a bitmap has been loaded
-	unsigned SurfaceID;			// the surface id of this bitmap
-};
+	/****************** CGameState Class Declaration *****************/
+	class CGameState {
+	public:
+		CGameState(CGame *g);
+		void OnDraw();			// Template Method
+		void OnCycle();			// Template Method
+		virtual ~CGameState() {}								// virtual destructor
+		virtual void OnBeginState() {}							// 設定每次進入這個狀態時所需的初值
+		virtual void OnInit() {}								// 狀態的初值及圖形設定
+		virtual void OnKeyDown(UINT, UINT, UINT) {}				// 處理鍵盤Down的動作
+		virtual void OnKeyUp(UINT, UINT, UINT) {}				// 處理鍵盤Up的動作
+		virtual void OnLButtonDown(UINT nFlags, CPoint point) {}// 處理滑鼠的動作
+		virtual void OnLButtonUp(UINT nFlags, CPoint point) {}	// 處理滑鼠的動作
+		virtual void OnMouseMove(UINT nFlags, CPoint point) {}  // 處理滑鼠的動作 
+		virtual void OnRButtonDown(UINT nFlags, CPoint point) {}// 處理滑鼠的動作
+		virtual void OnRButtonUp(UINT nFlags, CPoint point) {}	// 處理滑鼠的動作
+	protected:
+		void GotoGameState(int state);							// 跳躍至指定的state
+		void ShowInitProgress(int percent);						//
+																//
+																// Pure Virtual Functions
+		virtual void OnMove() {}								// 移動這個狀態的遊戲元素
+		virtual void OnShow() = 0;								// 顯示這個狀態的遊戲畫面
+		CGame *game;
+	};
 
-/////////////////////////////////////////////////////////////////////////////
-// 這個class提供可以移動的動畫
-// 每個Public Interface的用法都要懂，Implementation可以不懂
-/////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////
+	// 這個class是遊戲的核心，控制遊戲的進行
+	// 一般的遊戲並不需直接操作這個物件，因此可以不管這個class的使用方法
+	/////////////////////////////////////////////////////////////////////////////
 
-class CAnimation {
-public:
-	CAnimation(int=10);				// Constructor
-	void  AddBitmap(int,COLORREF=CLR_INVALID);
-	void  AddBitmap(char *,COLORREF=CLR_INVALID);
-	int   GetCurrentBitmapNumber();	// 
-	int   Height();					//
-	bool  IsFinalBitmap();			//
-	int   Left();					// 
-	void  OnMove();					// 
-	void  OnShow();					// 
-	void  Reset();					// 
-	void  SetDelayCount(int);		// 
-	void  SetTopLeft(int,int);		// 
-	int   Top();					// 
-	int   Width();					//
-private:
-	list<CMovingBitmap>				bmp;			// CMovingBitmap List
-	list<CMovingBitmap>::iterator	bmp_iter;		// CMovingBitmap List Iterator
-	int								bmp_counter;	// Current Index of CCMovingBitmap List
-	int								delay_counter;	// 
-	int								delay_count;	// 
-	int								x, y;			// 
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// 這個class提供顯示整數圖形的能力
-// 每個Public Interface的用法都要懂，Implementation可以不懂
-/////////////////////////////////////////////////////////////////////////////
-
-class CInteger {
-public:
-	CInteger(int=5);			// default 5 digits
-	void Add(int n);			// 增加整數值
-	int  GetInteger();			// 回傳整數值
-	void LoadBitmap();			// 載入0..9及負號之圖形
-	void SetInteger(int);		// 設定整數值
-	void SetTopLeft(int,int);	// 將動畫的左上角座標移至 (x,y)
-	void ShowBitmap();			// 將動畫貼到螢幕
-private:
-	const int NUMDIGITS;			// 共顯示NUMDIGITS個位數
-	static CMovingBitmap digit[11]; // 儲存0..9及負號之圖形(bitmap)
-	int x, y;						// 顯示的座標
-	int n;							// 整數值
-	bool isBmpLoaded;				// 是否已經載入圖形
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// 宣告尚未定義的class
-/////////////////////////////////////////////////////////////////////////////
-
-class CGame;
-class CGameStateInit;
-class CGameStateRun;
-class CGameStateOver;
-
-/////////////////////////////////////////////////////////////////////////////
-// 這個class為遊戲的各種狀態之Base class(是一個abstract class)
-// 每個Public Interface的用法都要懂，Implementation可以不懂
-/////////////////////////////////////////////////////////////////////////////
-
-class CGameState {
-public:
-	CGameState(CGame *g);
-	void OnDraw();			// Template Method
-	void OnCycle();			// Template Method
-	//
-	// virtual functions, 由繼承者提供implementation
-	//
-	virtual ~CGameState() {}								// virtual destructor
-	virtual void OnBeginState() {}							// 設定每次進入這個狀態時所需的初值
-	virtual void OnInit() {}								// 狀態的初值及圖形設定
-	virtual void OnKeyDown(UINT, UINT, UINT) {}				// 處理鍵盤Down的動作
-	virtual void OnKeyUp(UINT, UINT, UINT) {}				// 處理鍵盤Up的動作
-	virtual void OnLButtonDown(UINT nFlags, CPoint point) {}// 處理滑鼠的動作
-	virtual void OnLButtonUp(UINT nFlags, CPoint point) {}	// 處理滑鼠的動作
-	virtual void OnMouseMove(UINT nFlags, CPoint point) {}  // 處理滑鼠的動作 
-	virtual void OnRButtonDown(UINT nFlags, CPoint point) {}// 處理滑鼠的動作
-	virtual void OnRButtonUp(UINT nFlags, CPoint point) {}	// 處理滑鼠的動作
-protected:
-	void GotoGameState(int state);							// 跳躍至指定的state
-	void ShowInitProgress(int percent);						//
-	//
-	// Pure Virtual Functions
-	virtual void OnMove() {}								// 移動這個狀態的遊戲元素
-	virtual void OnShow() = 0;								// 顯示這個狀態的遊戲畫面
-	CGame *game;
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// 這個class是遊戲的核心，控制遊戲的進行
-// 一般的遊戲並不需直接操作這個物件，因此可以不管這個class的使用方法
-/////////////////////////////////////////////////////////////////////////////
-
-class CGame {
-public:
-	CGame();										// Constructor
-	~CGame();										// Destructor
-	bool IsRunning();								// 讀取遊戲是否正在進行中
-	void OnDraw();									// 對應CGameView的OnDraw()
-	void OnFilePause();								// 遊戲暫停
-	void OnInit();									// 遊戲繪圖及音效的初始化
-	void OnInitStates();							// 遊戲各狀態的初值及圖形設定
-	bool OnIdle();									// 遊戲的主迴圈
-	void OnKeyDown(UINT, UINT, UINT);				// 處理鍵盤Down的動作
-	void OnKeyUp(UINT, UINT, UINT);					// 處理鍵盤Up的動作
-	void OnKillFocus();								// 遊戲被迫暫停
-	void OnLButtonDown(UINT nFlags, CPoint point);	// 處理滑鼠的動作
-	void OnLButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
-	void OnMouseMove(UINT nFlags, CPoint point);    // 處理滑鼠的動作 
-	void OnRButtonDown(UINT nFlags, CPoint point);	// 處理滑鼠的動作
-	void OnRButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
-	void OnResume();								// 處理自「待命」還原的動作
-	void OnSetFocus();								// 處理Focus
-	void OnSuspend();								// 處理「待命」的動作
-	void SetGameState(int);
-	static CGame *Instance();
-private:
-	bool			running;			// 遊戲是否正在進行中(未被Pause)
-	bool            suspended;			// 遊戲是否被suspended
-	const int		NUM_GAME_STATES;	// 遊戲的狀態數(3個狀態)
-	CGameState		*gameState;			// pointer指向目前的遊戲狀態
-	CGameState		*gameStateTable[3];	// 遊戲狀態物件的pointer
-	static CGame	instance;			// 遊戲唯一的instance
-};
+	class CGame {
+	public:
+		CGame();										// Constructor
+		~CGame();										// Destructor
+		bool IsRunning();								// 讀取遊戲是否正在進行中
+		void OnDraw();									// 對應CGameView的OnDraw()
+		void OnFilePause();								// 遊戲暫停
+		void OnInit();									// 遊戲繪圖及音效的初始化
+		void OnInitStates();							// 遊戲各狀態的初值及圖形設定
+		bool OnIdle();									// 遊戲的主迴圈
+		void OnKeyDown(UINT, UINT, UINT);				// 處理鍵盤Down的動作
+		void OnKeyUp(UINT, UINT, UINT);					// 處理鍵盤Up的動作
+		void OnKillFocus();								// 遊戲被迫暫停
+		void OnLButtonDown(UINT nFlags, CPoint point);	// 處理滑鼠的動作
+		void OnLButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
+		void OnMouseMove(UINT nFlags, CPoint point);    // 處理滑鼠的動作 
+		void OnRButtonDown(UINT nFlags, CPoint point);	// 處理滑鼠的動作
+		void OnRButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
+		void OnResume();								// 處理自「待命」還原的動作
+		void OnSetFocus();								// 處理Focus
+		void OnSuspend();								// 處理「待命」的動作
+		void SetGameState(int);
+		static CGame *Instance();
+	private:
+		bool			running;			// 遊戲是否正在進行中(未被Pause)
+		bool            suspended;			// 遊戲是否被suspended
+		const int		NUM_GAME_STATES;	// 遊戲的狀態數(3個狀態)
+		CGameState		*gameState;			// pointer指向目前的遊戲狀態
+		CGameState		*gameStateTable[3];	// 遊戲狀態物件的pointer
+		static CGame	instance;			// 遊戲唯一的instance
+	};
 
 }

@@ -313,12 +313,7 @@ void CInteger::ShowBitmap()
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CMovingBitmap: Moving Bitmap class
-// 這個class提供可以移動的圖形
-// 要懂得怎麼呼叫(運用)其各種能力，但是可以不懂下列的程式是什麼意思
-/////////////////////////////////////////////////////////////////////////////
-
+/****************** CMovingBitmap Class Definition *****************/
 CMovingBitmap::CMovingBitmap()
 {
 	isBitmapLoaded = false;

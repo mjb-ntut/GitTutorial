@@ -7,57 +7,50 @@
 #include "CBouncingBall.h"
 
 namespace game_framework {
-	/////////////////////////////////////////////////////////////////////////////
-	// CBouncingBall: BouncingBall class
-	/////////////////////////////////////////////////////////////////////////////
 
-	CBouncingBall::CBouncingBall()
+	/****************** CBouncingBall Class Definition *****************/
+	CBouncingBall::CBouncingBall() : FLOOR(320)
 	{
-		const int INITIAL_VELOCITY = 20;	//
-		const int FLOOR = 400;				//
-		floor = FLOOR;
-		x = 95; y = FLOOR - 1;				//
-		rising = true;
-		initial_velocity = INITIAL_VELOCITY;
-		velocity = initial_velocity;
+		location = pair<int, int>(280, 320); // 
+		velocity = pair<int, int>(0, 0); //
+		acceleration = pair<int, int>(0, 1);	//
+		jerk = pair<int, int>(0, 0);
 	}
 
 	void CBouncingBall::LoadBitmap()
 	{
 		char *filename[4] = { ".\\bitmaps\\ball1.bmp",".\\bitmaps\\ball2.bmp",".\\bitmaps\\ball3.bmp",".\\bitmaps\\ball4.bmp" };
-		for (int i = 0; i < 4; i++)	// 載入動畫(由4張圖形構成)
+		for (int i = 0; i < 4; i++)
 			animation.AddBitmap(filename[i], RGB(0, 0, 0));
 	}
 
 	void CBouncingBall::OnMove()
 	{
-		if (rising) {			// 上升狀態
-			if (velocity > 0) {
-				y -= velocity;	// 當速度 > 0時，y軸上升(移動velocity個點，velocity的單位為 點/次)
-				velocity--;		// 受重力影響，下次的上升速度降低
-			}
-			else {
-				rising = false; // 當速度 <= 0，上升終止，下次改為下降
-				velocity = 1;	// 下降的初速(velocity)為1
-			}
+		//
+		if(location.second + velocity.second >= FLOOR)
+		{ 
+			location.second = FLOOR; /*Floor*/
+			velocity.first = 0;
+			velocity.second = 0;
 		}
-		else {				// 下降狀態
-			if (y < floor - 1) {  // 當y座標還沒碰到地板
-				y += velocity;	// y軸下降(移動velocity個點，velocity的單位為 點/次)
-				velocity++;		// 受重力影響，下次的下降速度增加
-			}
-			else {
-				y = floor - 1;  // 當y座標低於地板，更正為地板上
-				rising = true;	// 探底反彈，下次改為上升
-				velocity = initial_velocity; // 重設上升初始速度
-			}
+		else
+		{
+			location.first += velocity.first;
+			location.second += velocity.second;
+			velocity.second += acceleration.second;
 		}
-		animation.OnMove();		// 執行一次animation.OnMove()，animation才會換圖
+		animation.OnMove();	
 	}
 
 	void CBouncingBall::OnShow()
 	{
-		animation.SetTopLeft(x, y);
+		animation.SetTopLeft(location.first, location.second);
 		animation.OnShow();
+	}
+
+	void CBouncingBall::Jump()
+	{
+		velocity.first = 2;
+		velocity.second = -20;
 	}
 }

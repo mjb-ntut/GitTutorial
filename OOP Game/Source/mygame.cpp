@@ -186,6 +186,7 @@ namespace game_framework
 			background.SetTopLeft(60, -background.Height());
 		background.SetTopLeft(background.Left(), background.Top() + 1);
 		//
+		bball.OnMove();
 		eraser.OnMove(&gamemap);
 		//if (hits_left.GetInteger() <= 0) 	
 		//GotoGameState(GAME_STATE_OVER);
@@ -197,6 +198,7 @@ namespace game_framework
 		ShowInitProgress(33);	// Display Initialization Progress at 33%
 		eraser.LoadBitmap();
 		background.LoadBitmap(IDB_BACKGROUND);
+		bball.LoadBitmap();
 		//
 		gamemap.LoadBitmap();
 		//
@@ -234,6 +236,7 @@ namespace game_framework
 		const char KEY_UP = 38;
 		const char KEY_RIGHT = 39;
 		const char KEY_DOWN = 40;
+		const char KEY_SPACE = ' ';
 		if (nChar == KEY_LEFT)
 			eraser.SetMovingLeft(false);
 		if (nChar == KEY_RIGHT)
@@ -242,6 +245,8 @@ namespace game_framework
 			eraser.SetMovingUp(false);
 		if (nChar == KEY_DOWN)
 			eraser.SetMovingDown(false);
+		if (nChar == KEY_SPACE)
+			bball.Jump();
 	}
 
 	void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)
@@ -270,8 +275,9 @@ namespace game_framework
 	void CGameStateRun::OnShow()
 	{
 		gamemap.OnShow();
-		background.ShowBitmap();
+		//background.ShowBitmap();
 		eraser.OnShow(&gamemap);
+		bball.OnShow();
 		
 	}
 
