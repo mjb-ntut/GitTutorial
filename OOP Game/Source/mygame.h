@@ -89,6 +89,7 @@ namespace game_framework {
 		CMovingBitmap	background;
 		CMovingBitmap	help;			
 		CMovingBitmap	corner;	
+		CBouncingBall	bball;
 		CEraser			eraser;		
 		CInteger		hits_left;		
 	};

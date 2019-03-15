@@ -59,16 +59,22 @@ namespace game_framework {
 		animation.OnMove();
 		if (isMovingLeft)
 		{
-			x -= STEP_SIZE;
-			m->setSX(m->getSX() + STEP_SIZE);
+			if(m->isEmpty(x - STEP_SIZE, y))
+			{
+				x -= STEP_SIZE;
+				if (m->getScreenX(x) < 300)
+					m->setSX(m->getSX() - STEP_SIZE);
+			}	
 		}
-
 		if (isMovingRight)
 		{
-			x += STEP_SIZE;
-			m->setSX(m->getSX() - STEP_SIZE);
+			if(m->isEmpty(x+STEP_SIZE+80, y))
+			{ 
+				x += STEP_SIZE;
+				if (m->getScreenX(x) > 300)
+					m->setSX(m->getSX() + STEP_SIZE);
+			}
 		}
-
 		if (isMovingUp)
 		{
 			y -= STEP_SIZE;
@@ -106,7 +112,8 @@ namespace game_framework {
 
 	void CEraser::OnShow(CGameMap *m)
 	{
-		animation.SetTopLeft(m->getScreenX(320), m->getScreenY(240));
+		animation.SetTopLeft(m->getScreenX(x), m->getScreenY(y));
+		//TRACE("E:(%d,%d)\tM:(%d,%d)\n", x, y, m->getSX(), m->getSY());
 		animation.OnShow();
 	}
 }
