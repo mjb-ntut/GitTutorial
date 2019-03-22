@@ -133,6 +133,9 @@
     <ClCompile Include="Source\CGameMap.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
+    <ClCompile Include="Source\AABB.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio.h">
@@ -172,6 +175,9 @@
       <Filter>MyGame</Filter>
     </ClInclude>
     <ClInclude Include="Source\CGameMap.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AABB.h">
       <Filter>MyGame</Filter>
     </ClInclude>
   </ItemGroup>
@@ -224,6 +230,31 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Test-Map.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\IceMan_Map_Part1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.png" />
+    <Image Include="res\bitmap5.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="RES\Map1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\MegaMan-IceMan-StartPage.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Test-Map.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\IceMan_Map1a.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

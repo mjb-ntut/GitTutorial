@@ -140,6 +140,10 @@ IDB_BACKGROUND2         BITMAP                  "..\\res\\MegaMan-IceMan-StartPa
 
 IDB_TEST_MAP            BITMAP                  "..\\res\\Test-Map.bmp"
 
+IDB_MAP1A               BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\IceMan_Map1a.bmp"
+
+IDB_HERO                BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -293,6 +297,11 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
 
 /////////////////////////////////////////////////////////////////////////////
 //

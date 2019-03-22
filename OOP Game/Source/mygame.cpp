@@ -167,27 +167,27 @@ namespace game_framework
 	{
 		const int BACKGROUND_X = 60;
 		const int ANIMATION_SPEED = 15;
-		eraser.Initialize();
-		background.SetTopLeft(BACKGROUND_X,0);				
+					
 		help.SetTopLeft(0, SIZE_Y - help.Height());	
 		
 		//
 		gamemap.setSX(0);
 		gamemap.setSY(0);
 		//
+		hero.bmp.SetTopLeft(160, 80);
 		//CAudio::Instance()->Play(AUDIO_LAKE, true);		
 		
 	}
 
 	void CGameStateRun::OnMove()
 	{
+		//Example of Game Cursor If Neeeded
 		//SetCursor(AfxGetApp()->LoadCursor(IDC_GAMECURSOR));
-		if (background.Top() > SIZE_Y)
-			background.SetTopLeft(60, -background.Height());
-		background.SetTopLeft(background.Left(), background.Top() + 1);
-		//
-		bball.OnMove();
-		eraser.OnMove(&gamemap);
+		
+		//AABB OnMove
+		hero.OnMove(&gamemap);
+		
+		//Example of Switching Game States
 		//if (hits_left.GetInteger() <= 0) 	
 		//GotoGameState(GAME_STATE_OVER);
 	}
@@ -196,22 +196,17 @@ namespace game_framework
 	{
 		
 		ShowInitProgress(33);	// Display Initialization Progress at 33%
-		eraser.LoadBitmap();
-		background.LoadBitmap(IDB_BACKGROUND);
-		bball.LoadBitmap();
-		//
 		gamemap.LoadBitmap();
+		hero.LoadBitmap();
 		//
 		ShowInitProgress(50);	// Display Initialization Progress at 50%
 		Sleep(300); 
 		
-		help.LoadBitmap(IDB_HELP, RGB(255, 255, 255));	//
-		corner.LoadBitmap(IDB_CORNER);	//
-		//corner.ShowBitmap();	//
-		//hits_left.LoadBitmap();
-		//CAudio::Instance()->Load(AUDIO_DING, "sounds\\ding.wav");	//
-		//CAudio::Instance()->Load(AUDIO_LAKE, "sounds\\lake.mp3");	//
-		//CAudio::Instance()->Load(AUDIO_NTUT, "sounds\\ntut.mid");	//
+		help.LoadBitmap(IDB_HELP, RGB(255, 255, 255));	
+		
+		//Load Audio Instance (Example)
+		//CAudio::Instance()->Load(AUDIO_DING, "sounds\\ding.wav");
+		
 	}
 
 	void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -219,15 +214,18 @@ namespace game_framework
 		const char KEY_LEFT = 37;
 		const char KEY_UP = 38;	
 		const char KEY_RIGHT = 39; 
-		const char KEY_DOWN = 40;	
+		const char KEY_DOWN = 40;
+		const char KEY_SPACE = ' ';
 		if (nChar == KEY_LEFT)
-			eraser.SetMovingLeft(true);
+			hero.setVX(-2);
 		if (nChar == KEY_RIGHT)
-			eraser.SetMovingRight(true);
+			hero.setVX(2);
 		if (nChar == KEY_UP)
-			eraser.SetMovingUp(true);
+			hero.setVY(-2);
 		if (nChar == KEY_DOWN)
-			eraser.SetMovingDown(true);
+			hero.setVY(2);
+		if (nChar == KEY_SPACE)
+			hero.setVY(-40);
 	}
 
 	void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -238,25 +236,29 @@ namespace game_framework
 		const char KEY_DOWN = 40;
 		const char KEY_SPACE = ' ';
 		if (nChar == KEY_LEFT)
-			eraser.SetMovingLeft(false);
+			hero.setVX(0);
 		if (nChar == KEY_RIGHT)
-			eraser.SetMovingRight(false);
+			hero.setVX(0);
 		if (nChar == KEY_UP)
-			eraser.SetMovingUp(false);
+			hero.setVY(0);
 		if (nChar == KEY_DOWN)
-			eraser.SetMovingDown(false);
+			hero.setVY(0);
 		if (nChar == KEY_SPACE)
-			bball.Jump();
+		{
+			//Initialize AABB Velocity (vx, vy)
+			hero.setVX(0);
+			hero.setVY(0);
+		}
 	}
 
 	void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)
 	{
-		eraser.SetMovingLeft(true);
+		//eraser.SetMovingLeft(true);
 	}
 
 	void CGameStateRun::OnLButtonUp(UINT nFlags, CPoint point)
 	{
-		eraser.SetMovingLeft(false);
+		//eraser.SetMovingLeft(false);
 	}
 
 	void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)
@@ -264,21 +266,19 @@ namespace game_framework
 
 	void CGameStateRun::OnRButtonDown(UINT nFlags, CPoint point)  // 
 	{
-		eraser.SetMovingRight(true);
+		//eraser.SetMovingRight(true);
 	}
 
 	void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	//
 	{
-		eraser.SetMovingRight(false);
+		//eraser.SetMovingRight(false);
 	}
 
 	void CGameStateRun::OnShow()
 	{
 		gamemap.OnShow();
-		//background.ShowBitmap();
-		eraser.OnShow(&gamemap);
-		bball.OnShow();
-		
+		//Show Hero BitMap
+		hero.OnShow();
 	}
 
 } //namespace game_framwork

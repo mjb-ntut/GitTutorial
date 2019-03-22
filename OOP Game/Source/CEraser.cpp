@@ -59,29 +59,47 @@ namespace game_framework {
 		animation.OnMove();
 		if (isMovingLeft)
 		{
-			if(m->isEmpty(x - STEP_SIZE, y))
-			{
-				x -= STEP_SIZE;
-				if (m->getScreenX(x) < 300)
-					m->setSX(m->getSX() - STEP_SIZE);
-			}	
+			velocity.first = -1 * STEP_SIZE;
 		}
-		if (isMovingRight)
+		else if (isMovingRight)
 		{
-			if(m->isEmpty(x+STEP_SIZE+80, y))
-			{ 
-				x += STEP_SIZE;
-				if (m->getScreenX(x) > 300)
-					m->setSX(m->getSX() + STEP_SIZE);
-			}
+			velocity.first = STEP_SIZE;
 		}
+		else
+			velocity.first = 0;
+
 		if (isMovingUp)
 		{
-			y -= STEP_SIZE;
+			velocity.second = -1 * STEP_SIZE;
 		}
-		if (isMovingDown)
+		else if (isMovingDown)
 		{
-			y += STEP_SIZE;
+			velocity.second = STEP_SIZE;
+		}
+		else
+			velocity.second = 0;
+
+		int temp_x = x + velocity.first;
+		int temp_y = y + velocity.second;
+
+		if (m->isEmpty(temp_x, y))
+		{
+			x = temp_x;
+			//Code Needs to Be Cleaned...Need Variable Name for Screen Width
+			if (m->getScreenX(x) < 0.2 * 640 && velocity.first < 0)
+				m->setSX(m->getSX() + velocity.first);
+			if(m->getScreenX(x) > 0.8 * 640 && velocity.first > 0)
+				m->setSX(m->getSX() + velocity.first);
+		}
+
+		if (m->isEmpty(x, temp_y))
+		{
+			y = temp_y;
+			//Code Needs to Be Cleaned...Need Variable Name for Screen Width
+			if (m->getScreenY(y) < 0.2 * 480 && velocity.second < 0)
+				m->setSY(m->getSY() + velocity.second);
+			if (m->getScreenY(y) > 0.8 * 480 && velocity.second > 0)
+				m->setSY(m->getSY() + velocity.second);
 		}
 	}
 
@@ -113,7 +131,21 @@ namespace game_framework {
 	void CEraser::OnShow(CGameMap *m)
 	{
 		animation.SetTopLeft(m->getScreenX(x), m->getScreenY(y));
-		//TRACE("E:(%d,%d)\tM:(%d,%d)\n", x, y, m->getSX(), m->getSY());
 		animation.OnShow();
+	}
+
+	bool CEraser::isTouchingGround(CGameMap *m)
+	{
+		const int GROUND_VALUE = 2;
+		return (m->isObstacle(x, y + animation.Height()) == GROUND_VALUE);
+	};
+
+	void CEraser::Jump(CGameMap *m)
+	{
+		if(isTouchingGround(m))
+		{ 
+			velocity.first = 2;
+			velocity.second = -20;
+		}
 	}
 }

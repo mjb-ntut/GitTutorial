@@ -42,6 +42,8 @@
 #include "CBall.h"
 #include "CBouncingBall.h"
 #include "CGameMap.h"
+#include "Rectangle.h"
+#include "AABB.h"
 
 namespace game_framework {
 	
@@ -86,12 +88,8 @@ namespace game_framework {
 		void OnShow();									//
 	private:
 		CGameMap		gamemap;
-		CMovingBitmap	background;
 		CMovingBitmap	help;			
-		CMovingBitmap	corner;	
-		CBouncingBall	bball;
-		CEraser			eraser;		
-		CInteger		hits_left;		
+		AABB hero;
 	};
 
 	/****************** GameStateOver Class Declaration *****************/

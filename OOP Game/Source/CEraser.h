@@ -12,13 +12,15 @@ namespace game_framework {
 		int  GetY2();					// bottom-right corner y-coordinate
 		void Initialize();				// sets init. pos. & sets all isMoving to false 
 		void LoadBitmap();				// 
-		void OnMove(CGameMap *m);					// 
-		void OnShow(CGameMap *m);					// 
+		void OnMove(CGameMap *m);		// 
+		void OnShow(CGameMap *m);		// 
 		void SetMovingDown(bool flag);	// isMovingDown accessor function
 		void SetMovingLeft(bool flag);	// isMovingLeft accessor function
 		void SetMovingRight(bool flag); // isMovingRight accessor function
 		void SetMovingUp(bool flag);	// isMovingUp accessor function
 		void SetXY(int nx, int ny);		// set top-left corner to (nx, ny)
+		bool isTouchingGround(CGameMap *m);
+		void Jump(CGameMap *m);
 	protected:
 		CAnimation animation;		// CAnimation Object
 		int x, y;					// Top-Left Corner Coordinate
@@ -26,5 +28,8 @@ namespace game_framework {
 		bool isMovingLeft;			// Moving Left? (T/F)
 		bool isMovingRight;			// Moving Right? (T/F)
 		bool isMovingUp;			// Moving Up? (T/F)
+		pair<int, int> loccation;
+		pair<int, int> velocity;
+		pair<int, int> acceleration;
 	};
 }
