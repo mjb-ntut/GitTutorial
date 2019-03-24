@@ -174,7 +174,7 @@ namespace game_framework
 		gamemap.setSX(0);
 		gamemap.setSY(0);
 		//
-		hero.bmp.SetTopLeft(160, 80);
+		hero.SetTopLeft(500, 240);
 		//CAudio::Instance()->Play(AUDIO_LAKE, true);		
 		
 	}
@@ -186,7 +186,6 @@ namespace game_framework
 		
 		//AABB OnMove
 		hero.OnMove(&gamemap);
-		
 		//Example of Switching Game States
 		//if (hits_left.GetInteger() <= 0) 	
 		//GotoGameState(GAME_STATE_OVER);
@@ -225,7 +224,11 @@ namespace game_framework
 		if (nChar == KEY_DOWN)
 			hero.setVY(2);
 		if (nChar == KEY_SPACE)
-			hero.setVY(-40);
+		{
+			hero.setVX(-20);
+			hero.setVY(20);
+		}
+			
 	}
 
 	void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -278,7 +281,9 @@ namespace game_framework
 	{
 		gamemap.OnShow();
 		//Show Hero BitMap
-		hero.OnShow();
+		hero.OnShow(&gamemap);
+		//hero.setVX(0);
+		//hero.setVY(0);
 	}
 
 } //namespace game_framwork

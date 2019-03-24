@@ -12,29 +12,38 @@ namespace game_framework {
 	AABB::AABB() : vx(0), vy(0)
 	{}
 
-	void AABB::OnMove(CGameMap *m)
+	void AABB::OnMove(CGameMap *map)
 	{
-		if (vx != 0 || vy != 0)
+		const int STEPS_PER_FRAME = 1000;
+			
+		int currStep = 0; // holds the total number of differential steps taken
+		int lastStep = 0; // holds the number of steps taken before obstacle or end
+
+		CPoint offset(0, 0);
+
+		while (currStep < STEPS_PER_FRAME)
 		{
-			if (BBroadSweep(m)) //BBroadSweep Returns True No Collisions
-				bmp.SetTopLeft(bmp.Left() + vx, bmp.Top() + vy);
-			else
-			{ 
-				//Else Run The Super Slow Collision Algorithm
-				float f = BTightSweep(m);
-				float f2 = BTightSweep2(m);
-				int fvx = static_cast<int>(f * vx);
-				int fvy = static_cast<int>(f * vy);
-				bmp.SetTopLeft(bmp.Left() + fvx, bmp.Top() + fvy);
-			}
+			lastStep = BroadPhase(map, offset, currStep);
+			if (lastStep == 0) // broadphase background collision occurred
+				lastStep = TightSweep(map, offset, currStep);
+			
+			UpdateLV(map, offset, lastStep);
+		
+			currStep += lastStep;
 		}
-		//vx = vy = 0;
+		//Move Hero to New Coordinates
+		x += offset.x;
+		y += offset.y;
+		TRACE("Hero: (%d, %d)\tMap: (%d,%d)\n", x, y, map->getSX(), map->getSY());
+		//Move Map to Accomodate Hero @ New Coordinates
+		map->setSX(x);
+		map->setSY(0);
 	}
 
-	void AABB::OnShow()
+	void AABB::OnShow(CGameMap *map)
 	{
 		//Change Because The Code Is Pretty Junky
-		bmp.SetTopLeft(bmp.Left(), bmp.Top());
+		bmp.SetTopLeft(map->getScreenX(x), map->getScreenY(y)); // Needs to be Set In Screen Coordinates
 		bmp.ShowBitmap();
 	}
 
@@ -64,160 +73,149 @@ namespace game_framework {
 		vy = nvy;
 	}
 
-	bool AABB::BBroadSweep(CGameMap *m) const
+	void AABB::SetTopLeft(int nx, int ny)
 	{
-		//Create Broadsweep Rectangle: A Minimum Bounding Rectangle of both the 
-		//Original AABB (AABB @ t) and Updated AABB (AABB @ t + dt)
-		//We are going to take advantage of the fact that CMovingBitmap has a CRect
-		//CRect::UnionRect Creates a Minimum Bounding Rectangle that Contains both Rectangles
-		CRect bmpDest, bsweep;
-		TRACE("Original Rect: (%d, %d)\t(%d, %d)\n", bmp.location.left, bmp.location.top, bmp.location.right, bmp.location.bottom);
-		bmpDest.CopyRect(bmp.location);
-		bmpDest.MoveToXY(bmp.location.TopLeft() + CPoint(vx, vy));
-		TRACE("Dest. Rect: (%d, %d)\t(%d, %d)\n", bmpDest.left, bmpDest.top, bmpDest.right, bmpDest.bottom);
-		bsweep.UnionRect(bmp.location, bmpDest);
-		TRACE("Broadsweep Rect: (%d, %d)\t(%d, %d)\n", bsweep.left, bsweep.top, bsweep.right, bsweep.bottom);
-		//Check Broadsweep Box Intersects w/ Any CGameMap Obstacles 
-		for(auto i = bsweep.left / m->BW; i <= bsweep.right / m->BW; i++)
-			for(auto j = bsweep.top / m->BH; j <= bsweep.bottom / m->BH ; j++)
-			{ 
-				if (m->map_blocks[j][i] != 0)
-				{
-					TRACE("Potential Intersection: Block(%d, %d)\n", j, i);
-					return false;
-				}
-			}
-		return true;
+		x = nx;
+		y = ny;
 	}
 
-	float AABB::BTightSweep(CGameMap *m) const
+	int AABB::BroadPhase(CGameMap *map, CPoint offset, int step_no)
 	{
-		//Need To Create A Temporary Rectanlge With Which to Compare W/ Map Blocks
-		CRect temp;
-		temp.CopyRect(bmp.location);
-		//Need To Create A Step Count (STEPS_PER_FRAME)
+		//No. of Differential Steps per Frame
 		const int STEPS_PER_FRAME = 1000;
-		//Need To Move Our BitMap to Last Known Good Position
-		//Position Will Be Fractions of a Pixel
-		double fx, fy;
-		//Probably Should Revamp With a While-Loop or Do-While-Loop
-		for (auto k = 0; k < STEPS_PER_FRAME; k++)
-		{
-			fx = k * static_cast<double>(vx) / STEPS_PER_FRAME;
-			fy = k * static_cast<double>(vy) / STEPS_PER_FRAME;
+
+		bool empty = true;
+		//Problem IS Here
+		CRect origRect(x, y, x + bmp.Width(), y + bmp.Height());
+		origRect.MoveToXY(origRect.TopLeft() + offset);
+		origRect.NormalizeRect();
+
+		int x_offset = (STEPS_PER_FRAME - step_no) * vx / STEPS_PER_FRAME;
+		int y_offset = (STEPS_PER_FRAME - step_no) * vy / STEPS_PER_FRAME;
+		
+		CRect destRect(origRect);
+		destRect.NormalizeRect();
+		destRect.MoveToXY(origRect.TopLeft() + CPoint(x_offset, y_offset));
+	
+		//bphaseRect is the smallest bounding-box containing current
+		//and destination bounding-boxes
+		CRect bphaseRect;
 			
-			int new_x = bmp.location.left + static_cast<int>(round(fx));
-			int new_y = bmp.location.top + static_cast<int>(round(fy));
-
-			temp.MoveToXY(new_x, new_y);
-
-			for (auto i = temp.left / m->BW; i <= temp.right / m->BW; i++)
-				for (auto j = temp.top / m->BH; j <= temp.bottom / m->BH; j++)
-				{
-					if (m->map_blocks[j][i] != 0)
-					{
-						TRACE("Potential Intersection: Block(%d, %d)\n", j, i);
-						TRACE("Fractional Distance: %f\n", static_cast<float>(k) / STEPS_PER_FRAME);
-						return static_cast<float>(k-1) / STEPS_PER_FRAME;
-					}
-				}
+		bphaseRect.UnionRect(origRect, destRect);
+		
+		//check bphase is entirely inbounds
+		
+		if (map->offMap(bphaseRect))
+		{
+			TRACE("Out of Bounds!\n");
+			return 0;
 		}
-		TRACE("Fractional Distance: 1.0 (No Collision)\n");
-		return 1.f;
+			
+
+		empty = map->isEmpty(bphaseRect);
+		
+		if (empty)
+			return STEPS_PER_FRAME - step_no;
+		return 0;
 	}
 
-	float AABB::BTightSweep2(CGameMap *m) const
+	int AABB::TightSweep(CGameMap *map, CPoint offset, int step_no)
 	{
-		//These Comments And This Code Needs To Be Cleaned Up At Some Point
-		//This Function Aims To Improve The Speed OF BTightSweep Though There Are
-		//Several Considerations.
-		//1. Similar to BTightSweep This Function Only Aims to Check Collision w/ Background
-		//2. An Important Assumption That The Incremental Time dt Is Small Enough Thar
-		//   No Edge Could Possibly Miss A Map Block (BG Obstacle) Entirely This
-		//   This Depends of Veloicty, BlockSize & Time Step
-		//3. That Only A Leading Edge Will Be First To Hit An Obstacle (May Discard
-		//   Since Not So Sure About this Assumption It Seems Correct But May Be Wrong
-		//Make Point2f Class Like OpenCV that Class IT IS SWEET
-		
-		//Need To Create A Temporary Rectanlge With Which to Compare W/ Map Blocks
-		CRect temp;
-		temp.CopyRect(bmp.location);
-		//Need To Create A Step Count (STEPS_PER_FRAME)
+		//no. of differential steps per frame (static const for class?)
 		const int STEPS_PER_FRAME = 1000;
-		//Need To Move Our BitMap to Last Known Good Position
-		//Position Will Be Fractions of a Pixel
-		float fx, fy;
-		
-		for (auto k = 0; k < STEPS_PER_FRAME; k++)
-		{
-			fx = k * static_cast<float>(vx) / STEPS_PER_FRAME;
-			fy = k * static_cast<float>(vy) / STEPS_PER_FRAME;
-			//Throws fx, fy to Floor
-			int new_x = bmp.location.left + static_cast<int>(fx);
-			int new_y = bmp.location.top + static_cast<int>(fy);
-			
-			//Need To Test Leading Edge
-			//Right & Left Edge
-			bool isCollision = false;
-			temp.MoveToXY(new_x, temp.top);
-			for (auto i = temp.top / m->BH; i <= temp.bottom / m->BH; i++)
-			{
-				int n = 0;
-				if (vx < 0)
-				{ 
-					n = m->isObstacle(temp.left, i * m->BH);
-					if (n != 0)
-					{
-						TRACE("LEFT SIDE COLLISION\n");
-						TRACE("OFFENDING BLOCK: [%d][%d]\n", i, temp.left/m->BW);
-						isCollision = true;
-					}
-				}	
-				else
-				{ 
-					n = m->isObstacle(temp.right, i * m->BH);
-					if (n != 0)
-					{
-						TRACE("RIGHT SIDE COLLISION\n");
-						TRACE("OFFENDING BLOCK: [%d][%d]\n", i, temp.right / m->BW);
-						isCollision = true;
-					}
-				}	
-			}
 
-			//Top & Bottom Edge
-			temp.MoveToXY(temp.left, new_y);
-			for (auto i = temp.left / m->BW; i < temp.right / m->BW; i ++)
-			{
-				int n = 0;
+		bool xEmpty = true;
+		bool yEmpty = true;
+
+		CRect origRect(x, y, x + bmp.Width(), y + bmp.Height());
+		origRect.MoveToXY(origRect.TopLeft() + offset);
+		CRect dtDestR(origRect);
+
+		for (auto i = 1; i < STEPS_PER_FRAME - step_no; i++)
+		{
+			int x_COffset = (i - 1) * vx / STEPS_PER_FRAME;
+			int x_NOffset = i * vx / STEPS_PER_FRAME;
+			
+			int y_COffset = (i - 1) * vy / STEPS_PER_FRAME;
+			int y_NOffset = i * vy / STEPS_PER_FRAME;
+
+			
+
+			
+			if (abs(y_NOffset) > abs(y_COffset)) 
+			{	
+				// Check for General TB-Collision
+				dtDestR.MoveToXY(origRect.TopLeft() + CPoint(x_COffset, y_NOffset));
 				if (vy < 0)
-				{
-					n = m->isObstacle(i * m->BW, temp.top);
-					if (n != 0)
-					{
-						TRACE("TOP SIDE COLLISION\n");
-						TRACE("OFFENDING BLOCK: [%d][%d]\n", temp.top / m->BH, i);
-						isCollision = true;
-					}
-				}
+					yEmpty = map->isEmptyH(dtDestR.top, dtDestR.left, dtDestR.right);
 				else
-				{
-					n = m->isObstacle(i * m->BW, temp.bottom);
-					if (n != 0)
-					{
-						TRACE("BOTTOM SIDE COLLISION\n");
-						TRACE("OFFENDING BLOCK: [%d][%d]\n", temp.bottom / m->BH, i);
-						isCollision = true;
-					}
-				}
+					yEmpty = map->isEmptyH(dtDestR.bottom, dtDestR.left, dtDestR.right);
 			}
-			if (isCollision)
+			
+			if (abs(x_NOffset) > abs(x_COffset))
+			{// Check for LR-Collision
+				dtDestR.MoveToXY(origRect.TopLeft() + CPoint(x_NOffset, y_COffset));
+				if (vx < 0)
+					xEmpty = map->isEmptyV(dtDestR.left, dtDestR.top, dtDestR.bottom);
+				else
+					xEmpty = map->isEmptyV(dtDestR.right, dtDestR.top, dtDestR.bottom);
+			}
+			//Record the additional number of steps taken during tightsweep before
+			//a collision occurred.
+			if (!xEmpty || !yEmpty)
 			{
-				float f3 = static_cast<float>(k) / STEPS_PER_FRAME;
-				TRACE("COLLISION TIME: %f\n", f3);
-				return f3;
+				TRACE("COLLISION @ Step: %d\n", step_no + i);
+				return i;
 			}
 		}
-		return 1.f;
+		return STEPS_PER_FRAME - step_no;
+	}
+
+	void AABB::UpdateLV(CGameMap* map, CPoint& offset, int last_step)
+	{
+		const int STEPS_PER_FRAME = 1000;
+		
+		CRect origRect(x, y, x + bmp.Width(), y + bmp.Height());
+		CRect currRect(origRect);
+		
+
+		bool xEmpty = true;
+		int dx = last_step * vx / STEPS_PER_FRAME;
+		int ny = (last_step - 1) * vy / STEPS_PER_FRAME;
+
+		currRect.MoveToXY(origRect.TopLeft() + offset + CPoint(dx, ny));
+		if (vx < 0)
+			xEmpty = map->isEmptyV(currRect.left, currRect.top, currRect.bottom);
+		else
+			xEmpty = map->isEmptyV(currRect.right, currRect.top, currRect.bottom);
+				
+		bool yEmpty = true;
+		int nx = (last_step - 1) * vx / STEPS_PER_FRAME;
+		int dy = last_step * vy / STEPS_PER_FRAME;
+		currRect.MoveToXY(origRect.TopLeft() + offset + CPoint(nx, dy));
+		if (vy < 0)
+			yEmpty = map->isEmptyH(currRect.top, currRect.left, currRect.right);
+		else
+			yEmpty = map->isEmptyH(currRect.bottom, currRect.left, currRect.right);
+		
+		//update x- & y-direction location
+		if (xEmpty && yEmpty)
+			offset += CPoint(dx, dy);
+		else
+			offset += CPoint(nx, ny);
+
+		//update x- & y-direction velocity
+		if(xEmpty == false)
+		{
+			TRACE("LR COLLISION\n");
+			vx = 0;
+		}
+		if (yEmpty == false)
+		{
+			TRACE("TB COLLISION\n");
+			vy = 0;
+		}
+		if (!xEmpty || !yEmpty)
+			TRACE("NEW VELOICTY: (%d, %d)\n", vx, vy);
 	}
 }

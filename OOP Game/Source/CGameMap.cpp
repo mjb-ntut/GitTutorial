@@ -8,7 +8,7 @@
 
 namespace game_framework {
 	
-	CGameMap::CGameMap() : BW(32), BH(32), MAP_MIN_X(0), MAP_MAX_X(928)
+	CGameMap::CGameMap() : BW(32), BH(32)
 	{
 		int temp[15][58] = {
 			//Top Rows
@@ -57,14 +57,55 @@ namespace game_framework {
 	{
 		int gx = x / BW;
 		int gy = y / BH;
+		if (offMap(CPoint(x, y)))
+			return false;
 		return (map_blocks[gy][gx] == 0);
 	}
 
-	int CGameMap::isObstacle(int x, int y) const
+	bool CGameMap::isEmpty(CRect r) const
 	{
-		int gx = x / BW;
-		int gy = y / BH;
-		return map_blocks[gy][gx];
+		if (offMap(r))
+			return false;
+
+		for(auto i = r.left / BW; i <= r.right / BW; i++ )
+			for (auto j = r.top / BH; j <= r.bottom / BH; j++)
+			{
+				if (map_blocks[j][i] != 0)
+					return false;
+			}
+		return true;
+	}
+	
+	bool CGameMap::isEmptyH(int y, int x_init, int x_fin) const
+	{
+		if (offMap(CPoint(x_init, y)) || offMap(CPoint(x_fin, y)))
+			return false;
+		for (auto i = x_init / BW; i <= x_fin / BW; i++)
+			if (map_blocks[y / BH][i] != 0)
+				return false;
+		return true;
+	}
+
+	bool CGameMap::isEmptyV(int x, int y_init, int y_fin) const
+	{
+		if (offMap(CPoint(x, y_fin)) || offMap(CPoint(x, y_init)))
+			return false;
+		for (auto i = y_init / BH; i <= y_fin / BH; i++)
+			if (map_blocks[i][x / BW] != 0)
+				return false;
+		return true;
+	}
+
+	bool CGameMap::offMap(CRect r) const
+	{
+		return(r.left < MAP_MIN_X || r.right > MAP_MAX_X
+			|| r.top < MAP_MIN_Y || r.bottom > MAP_MAX_Y);
+	}
+
+	bool CGameMap::offMap(CPoint p) const
+	{
+		return(p.x < MAP_MIN_X || p.x > MAP_MAX_X
+			|| p.y < MAP_MIN_Y || p.y > MAP_MAX_Y);
 	}
 
 	int CGameMap::getScreenX(int x) const
@@ -79,17 +120,18 @@ namespace game_framework {
 
 	void CGameMap::setSX(int nx)
 	{
-		if (nx > MAP_MAX_X - 640)
-			sx = MAP_MAX_X - 640;
-		else if (nx < MAP_MIN_X)
+		if (nx - 320 + 22 < MAP_MIN_X)
 			sx = MAP_MIN_X;
+		else if (nx + 320 + 22 > MAP_MAX_X)
+			sx = MAP_MAX_X - 640;
 		else
-			sx = nx;
+			sx = nx - 320 + 22;
 	}
 
 	void CGameMap::setSY(int ny)
 	{
-		sy = ny;
+		//sy = ny;
+		sy = MAP_MIN_Y;
 	}
 
 	int CGameMap::getSX() const
