@@ -89,6 +89,7 @@ namespace game_framework {
 		CGameMap		gamemap;
 		CMovingBitmap	help;			
 		AABB hero;
+		list<CBall> ball_list;
 	};
 
 	/****************** GameStateOver Class Declaration *****************/

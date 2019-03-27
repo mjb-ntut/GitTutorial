@@ -174,7 +174,7 @@ namespace game_framework
 		gamemap.setSX(0);
 		gamemap.setSY(0);
 		//
-		hero.SetTopLeft(500, 240);
+		hero.SetTopLeft(60, 240);
 		//CAudio::Instance()->Play(AUDIO_LAKE, true);		
 		
 	}
@@ -186,6 +186,8 @@ namespace game_framework
 		
 		//AABB OnMove
 		hero.OnMove(&gamemap);
+		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			i->OnMove();
 		//Example of Switching Game States
 		//if (hits_left.GetInteger() <= 0) 	
 		//GotoGameState(GAME_STATE_OVER);
@@ -216,19 +218,24 @@ namespace game_framework
 		const char KEY_DOWN = 40;
 		const char KEY_SPACE = ' ';
 		if (nChar == KEY_LEFT)
-			hero.setVX(-2);
-		if (nChar == KEY_RIGHT)
-			hero.setVX(2);
-		if (nChar == KEY_UP)
-			hero.setVY(-2);
-		if (nChar == KEY_DOWN)
-			hero.setVY(2);
-		if (nChar == KEY_SPACE)
 		{
-			hero.setVX(-20);
-			hero.setVY(20);
+			TRACE("KEY_LEFT DOWN\n");
+			hero.setVX(-4.f);
 		}
 			
+		if (nChar == KEY_RIGHT)
+		{
+			TRACE("KEY_RIGHT DOWN\n");
+			hero.setVX(4.f);
+		}	
+		if (nChar == KEY_UP)
+			hero.setVY(0.f);
+		if (nChar == KEY_DOWN)
+			hero.setVY(1.f);
+		if (nChar == KEY_SPACE)
+		{
+			TRACE("KEY_SPACE DOWN\n");
+		}
 	}
 
 	void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -239,18 +246,19 @@ namespace game_framework
 		const char KEY_DOWN = 40;
 		const char KEY_SPACE = ' ';
 		if (nChar == KEY_LEFT)
-			hero.setVX(0);
+			hero.setVX(0.f);
 		if (nChar == KEY_RIGHT)
-			hero.setVX(0);
+			hero.setVX(0.f);
 		if (nChar == KEY_UP)
-			hero.setVY(0);
+			hero.setVY(0.f);
 		if (nChar == KEY_DOWN)
-			hero.setVY(0);
+			hero.setVY(0.f);
 		if (nChar == KEY_SPACE)
 		{
 			//Initialize AABB Velocity (vx, vy)
-			hero.setVX(0);
-			hero.setVY(0);
+			TRACE("KEY_SPACE_UP\n");
+			//hero.setVX(0.f);
+			hero.setVY(-15.f);
 		}
 	}
 
@@ -282,9 +290,12 @@ namespace game_framework
 		gamemap.OnShow();
 		//Show Hero BitMap
 		hero.OnShow(&gamemap);
-		//hero.setVX(0);
-		//hero.setVY(0);
+
+		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			i->OnShow(&gamemap);
+		//hero.setVX(0.f);
+		//hero.setVY(0.f);
 	}
 
-} //namespace game_framwork
+} //namespace game_framework
 

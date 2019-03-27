@@ -11,8 +11,11 @@ namespace game_framework {
 		void OnShow();
 		bool isEmpty(int, int) const;
 		bool isEmpty(CRect) const;
-		bool isEmptyH(int, int, int) const;
-		bool isEmptyV(int, int, int) const;
+		bool pCollision(CRect) const;
+		bool lCollision(CRect) const;
+		bool rCollision(CRect) const;
+		bool bCollision(CRect) const;
+		bool tCollision(CRect) const;
 		bool offMap(CRect) const;
 		bool offMap(CPoint) const;
 		int getScreenX(int) const; // accessor method for screen relative x-coordinate

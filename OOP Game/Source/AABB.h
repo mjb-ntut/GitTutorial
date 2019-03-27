@@ -12,18 +12,23 @@ namespace game_framework {
 		void OnMove(CGameMap*);
 		void OnShow(CGameMap*);
 		void LoadBitmap();
-		int getVX() const;
-		int getVY() const;
-		void setVX(int);
-		void setVY(int);
+		float getVX() const;
+		float getVY() const;
+		void setVX(float);
+		void setVY(float);
 		void SetTopLeft(int, int);
 	private:
 		CMovingBitmap bmp;
-		int BroadPhase(CGameMap*, CPoint, int);
-		int TightSweep(CGameMap*, CPoint, int);
-		void UpdateLV(CGameMap*, CPoint& , int);
-		int x, y; // Absolute Location
-		int vx, vy;
+		bool BroadPhase(CGameMap*, float&);
+		bool TightSweep(CGameMap*, float&);
+		void UpdateLocation(float);
+		void UpdateVelocity(float);
+		void CRUpdateVelocity(CGameMap*);
+		void newCoordinates(pair<int, int>&, pair<float, float>&, float) const;
+		int x, y;
+		float fx, fy; 
+		float fvx, fvy;
+		float fax, fay;
 	};
 }
 #endif

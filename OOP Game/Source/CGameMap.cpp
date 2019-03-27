@@ -64,9 +64,6 @@ namespace game_framework {
 
 	bool CGameMap::isEmpty(CRect r) const
 	{
-		if (offMap(r))
-			return false;
-
 		for(auto i = r.left / BW; i <= r.right / BW; i++ )
 			for (auto j = r.top / BH; j <= r.bottom / BH; j++)
 			{
@@ -76,24 +73,46 @@ namespace game_framework {
 		return true;
 	}
 	
-	bool CGameMap::isEmptyH(int y, int x_init, int x_fin) const
+	bool CGameMap::pCollision(CRect r) const
 	{
-		if (offMap(CPoint(x_init, y)) || offMap(CPoint(x_fin, y)))
-			return false;
-		for (auto i = x_init / BW; i <= x_fin / BW; i++)
-			if (map_blocks[y / BH][i] != 0)
-				return false;
-		return true;
+		return (bCollision(r) || rCollision(r) || tCollision(r) || lCollision(r));
 	}
 
-	bool CGameMap::isEmptyV(int x, int y_init, int y_fin) const
+	bool CGameMap::bCollision(CRect r) const
 	{
-		if (offMap(CPoint(x, y_fin)) || offMap(CPoint(x, y_init)))
-			return false;
-		for (auto i = y_init / BH; i <= y_fin / BH; i++)
-			if (map_blocks[i][x / BW] != 0)
-				return false;
-		return true;
+		//Test Bottom Border
+		for (auto i = r.left / BW; i <= r.right / BW; i++)
+			if (map_blocks[r.bottom / BH][i] != 0)
+				return true;
+		//No Collision Detected
+		return false;
+	}
+
+	bool CGameMap::tCollision(CRect r) const
+	{
+		//Test Top Border
+		for (auto i = r.left / BW; i <= r.right / BW; i++)
+			if (map_blocks[r.top / BH][i] != 0)
+				return true;
+		return false;
+	}
+	
+	bool CGameMap::lCollision(CRect r) const
+	{
+		//Test Left Border
+		for (auto i = r.top / BH; i <= r.bottom / BH; i++)
+			if (map_blocks[i][r.left / BW] != 0)
+				return true;
+		return false;
+	}
+
+	bool CGameMap::rCollision(CRect r) const
+	{
+		//Test Right Border
+		for (auto i = r.top / BH; i <= r.bottom / BH; i++)
+			if (map_blocks[i][r.right / BW] != 0)
+				return true;
+		return false;
 	}
 
 	bool CGameMap::offMap(CRect r) const
@@ -108,18 +127,21 @@ namespace game_framework {
 			|| p.y < MAP_MIN_Y || p.y > MAP_MAX_Y);
 	}
 
-	int CGameMap::getScreenX(int x) const
+	int CGameMap::getScreenX(int nx) const
 	{
-		return x - sx;
+		//int nx = static_cast<float>(fnx);
+		return nx - sx;
 	}
 
-	int CGameMap::getScreenY(int y) const
+	int CGameMap::getScreenY(int ny) const
 	{
-		return y - sy;
+		//int ny = static_cast<float>(fny);
+		return ny - sy;
 	}
 
 	void CGameMap::setSX(int nx)
 	{
+		//int nx = static_cast<int>(fnx);
 		if (nx - 320 + 22 < MAP_MIN_X)
 			sx = MAP_MIN_X;
 		else if (nx + 320 + 22 > MAP_MAX_X)
@@ -130,7 +152,6 @@ namespace game_framework {
 
 	void CGameMap::setSY(int ny)
 	{
-		//sy = ny;
 		sy = MAP_MIN_Y;
 	}
 
