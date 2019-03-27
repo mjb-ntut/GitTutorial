@@ -5,17 +5,20 @@ namespace game_framework {
 	{
 	public:
 		CBall();
-		bool IsAlive();								
+		//Default Destructor For Now ~CBall();
+		bool IsAlive() const;								
 		void LoadBitmap(); //load bmp, bmp_center bitmaps
 		void OnMove();											
 		void OnShow(CGameMap*);											
 		void SetXY(int nx, int ny);	//set bmp and bmp_center top-left corner coor.
 		void SetIsAlive(bool alive);							
 		void SetDelay(int d);
+		bool OffScreen(CGameMap*);
 	protected:
 		CMovingBitmap bmp; //
 		CMovingBitmap bmp_center; //bitmap of rotation center  
 		int x, y; //bmp top-left corner coordinates (x, y) 
+		int vx, vy;
 		int dx, dy;	//top-left corner diff. coordinates (dx, dy)
 		int index;					// 
 		int delay_counter;			// 

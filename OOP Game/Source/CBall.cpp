@@ -13,6 +13,7 @@ namespace game_framework {
 	{
 		is_alive = true;
 		x = y = dx = dy = index = delay_counter = 0;
+		vx = 5; vy = 0;
 	}
 
 	bool CBall::HitRectangle(int tx1, int ty1, int tx2, int ty2)
@@ -26,7 +27,7 @@ namespace game_framework {
 		return (tx2 >= x1 && tx1 <= x2 && ty2 >= y1 && ty1 <= y2);
 	}
 
-	bool CBall::IsAlive()
+	bool CBall::IsAlive() const
 	{
 		return is_alive;
 	}
@@ -41,6 +42,8 @@ namespace game_framework {
 	{
 		if (!is_alive)
 			return;
+		x += vx;
+		y += vy;
 		delay_counter--;
 		if (delay_counter < 0) {
 			delay_counter = delay;
@@ -59,6 +62,12 @@ namespace game_framework {
 	void CBall::SetDelay(int d)
 	{
 		delay = d;
+	}
+
+	bool CBall::OffScreen(CGameMap *m)
+	{
+		//CHECK IF OBJECT IS ON SCREEN
+		return (x < m->getSX() || y < m->getSY() || x > m->getSX() + 640 || y > m->getSY() + 480);
 	}
 
 	void CBall::SetIsAlive(bool alive)

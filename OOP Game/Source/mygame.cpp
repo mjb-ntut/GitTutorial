@@ -188,6 +188,16 @@ namespace game_framework
 		hero.OnMove(&gamemap);
 		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
 			i->OnMove();
+		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			if (i->OffScreen(&gamemap))
+				i->SetIsAlive(false);
+		for (auto i = ball_list.begin(), j = ball_list.begin(); i != ball_list.end();)
+			if (!i->IsAlive())
+				i = ball_list.erase(i);
+			else
+				i++;
+				
+			
 		//Example of Switching Game States
 		//if (hits_left.GetInteger() <= 0) 	
 		//GotoGameState(GAME_STATE_OVER);
@@ -217,6 +227,8 @@ namespace game_framework
 		const char KEY_RIGHT = 39; 
 		const char KEY_DOWN = 40;
 		const char KEY_SPACE = ' ';
+		const char KEY_SHIFT = 0x10;
+		TRACE("nChar == %d\n", nChar);
 		if (nChar == KEY_LEFT)
 		{
 			TRACE("KEY_LEFT DOWN\n");
@@ -232,9 +244,14 @@ namespace game_framework
 			hero.setVY(0.f);
 		if (nChar == KEY_DOWN)
 			hero.setVY(1.f);
-		if (nChar == KEY_SPACE)
+		//if (nChar == KEY_SPACE)
+		if (nChar == KEY_SHIFT)
 		{
-			TRACE("KEY_SPACE DOWN\n");
+			TRACE("KEY_SHIFT DOWN\n");
+			CBall b;
+			b.LoadBitmap();
+			b.SetXY(hero.getX(), hero.getY());
+			ball_list.push_back(b);
 		}
 	}
 

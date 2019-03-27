@@ -12,6 +12,8 @@ namespace game_framework {
 		void OnMove(CGameMap*);
 		void OnShow(CGameMap*);
 		void LoadBitmap();
+		int getX() const;
+		int getY() const;
 		float getVX() const;
 		float getVY() const;
 		void setVX(float);

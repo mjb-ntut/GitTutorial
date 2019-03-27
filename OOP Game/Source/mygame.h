@@ -85,6 +85,7 @@ namespace game_framework {
 	protected:
 		void OnMove();									//
 		void OnShow();									//
+		bool single_digit(const CBall& value) { return (!(value.IsAlive())); }
 	private:
 		CGameMap		gamemap;
 		CMovingBitmap	help;			

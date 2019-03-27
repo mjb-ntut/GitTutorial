@@ -53,6 +53,16 @@ namespace game_framework {
 		bmp.LoadBitmap(IDB_HERO);
 	}
 
+	int AABB::getX() const
+	{
+		return x;
+	}
+
+	int AABB::getY() const
+	{
+		return y;
+	}
+
 	float AABB::getVX() const
 	{
 		return fvx;
