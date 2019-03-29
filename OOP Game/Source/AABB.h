@@ -19,6 +19,7 @@ namespace game_framework {
 		void SetTopLeft(int, int);
 	private:
 		CMovingBitmap bmp;
+		CAnimation bmp_T;
 		bool BroadPhase(CGameMap*, float&);
 		bool TightSweep(CGameMap*, float&);
 		void UpdateLocation(float);

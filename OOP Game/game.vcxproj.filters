@@ -95,6 +95,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\audio.cpp">
@@ -249,6 +250,24 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="RES\MegaStand.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\WoodMan-Map1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="RES\Mega Run1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="RES\Mega Run2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="RES\Mega Run3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="RES\Mega Run4.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -105,4 +105,4 @@ namespace game_framework {
 		int counter;	
 	};
 
-}//namespace game_framework
+}

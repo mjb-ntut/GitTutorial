@@ -166,7 +166,7 @@ namespace game_framework
 	void CGameStateRun::OnBeginState()
 	{
 		const int BACKGROUND_X = 60;
-		const int ANIMATION_SPEED = 15;
+		const int ANIMATION_SPEED = 16;
 					
 		help.SetTopLeft(0, SIZE_Y - help.Height());	
 		
@@ -174,17 +174,13 @@ namespace game_framework
 		gamemap.setSX(0);
 		gamemap.setSY(0);
 		//
-		hero.SetTopLeft(60, 240);
+		hero.SetTopLeft(10, 359);
 		//CAudio::Instance()->Play(AUDIO_LAKE, true);		
 		
 	}
 
 	void CGameStateRun::OnMove()
 	{
-		//Example of Game Cursor If Neeeded
-		//SetCursor(AfxGetApp()->LoadCursor(IDC_GAMECURSOR));
-		
-		//AABB OnMove
 		hero.OnMove(&gamemap);
 		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
 			i->OnMove();

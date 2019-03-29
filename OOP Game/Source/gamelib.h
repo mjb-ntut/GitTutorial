@@ -68,7 +68,7 @@
 
 #define SIZE_X				 640		// Default Screen Width
 #define SIZE_Y				 480		// Default Screen Height
-#define OPEN_AS_FULLSCREEN	 false		// 是否以全螢幕方式開啟遊戲
+#define OPEN_AS_FULLSCREEN	 true		// 是否以全螢幕方式開啟遊戲
 #define SHOW_LOAD_PROGRESS   true		// 是否顯示loading(OnInit)的進度
 #define DEFAULT_BG_COLOR	 RGB(0,0,0)	// Default Background Color
 #define GAME_CYCLE_TIME		 33		    // 每33ms跑一次Move及Show(每秒30次)

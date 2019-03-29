@@ -229,6 +229,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Res\ball.bmp" />
     <None Include="RES\bmp0.bmp" />
     <None Include="RES\bmp1.bmp" />
@@ -346,10 +347,16 @@
     <Image Include="res\bmp00001.bmp" />
     <Image Include="res\bmp00002.bmp" />
     <Image Include="RES\Map1.bmp" />
+    <Image Include="RES\Mega Run1.bmp" />
+    <Image Include="RES\Mega Run2.bmp" />
+    <Image Include="RES\Mega Run3.bmp" />
+    <Image Include="RES\Mega Run4.bmp" />
     <Image Include="res\MegaMan-IceMan-StartPage.bmp" />
+    <Image Include="RES\MegaStand.bmp" />
     <Image Include="RES\poring.bmp" />
     <Image Include="RES\pug.bmp" />
     <Image Include="res\Test-Map.bmp" />
+    <Image Include="res\WoodMan-Map1.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
