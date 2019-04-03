@@ -5,6 +5,7 @@
 #include "audio.h"
 #include "gamelib.h"
 #include "CGameMap.h"
+#include "Monster.h"
 #include "CBall.h"
 
 namespace game_framework {
@@ -13,7 +14,7 @@ namespace game_framework {
 	{
 		is_alive = true;
 		x = y = dx = dy = index = delay_counter = 0;
-		vx = 5; vy = 0;
+		vx = 0; vy = 0;
 	}
 
 	bool CBall::HitRectangle(int tx1, int ty1, int tx2, int ty2)
@@ -25,6 +26,14 @@ namespace game_framework {
 		int y2 = y1 + bmp.Height();	
 		//overlap test					
 		return (tx2 >= x1 && tx1 <= x2 && ty2 >= y1 && ty1 <= y2);
+	}
+
+	bool CBall::HitRectangle(CRect r)
+	{
+		CRect bRect(bmp_center.location);
+		bRect.NormalizeRect();
+		CRect rectInter;
+		return (rectInter.IntersectRect(r, bRect) != 0);
 	}
 
 	bool CBall::IsAlive() const
@@ -80,6 +89,26 @@ namespace game_framework {
 		x = nx; y = ny;
 	}
 
+	void CBall::SetVX(int nvx)
+	{
+		vx = nvx;
+	}
+
+	void CBall::SetVY(int nvy)
+	{
+		vy = nvy;
+	}
+
+	int CBall::GetVX() const
+	{
+		return vx;
+	}
+
+	int CBall::GetVY() const
+	{
+		return vy;
+	}
+
 	void CBall::OnShow(CGameMap *map)
 	{
 		if (is_alive) {
@@ -90,5 +119,60 @@ namespace game_framework {
 			bmp_center.SetTopLeft(map->getScreenX(x), map->getScreenY(y));
 			bmp_center.ShowBitmap();
 		}
+	}
+
+	bool CBall::BroadPhase(Monster mike)
+	{
+		//SHOULD MONSTER BE SWITCHED TO CONSTANT REFERENCE
+		CRect origRect(x, y, x + bmp_center.Width(), y + bmp_center.Height());
+		origRect.NormalizeRect();
+		
+		CRect destRect(origRect);
+		destRect.MoveToXY(origRect.left + vx, origRect.top + vy);
+		//TRACE("Rect(O->D): (%d, %d)\t(%d, %d)\n", origRect.left, origRect.top, destRect.left, destRect.top);
+		CRect bpRect;
+		bpRect.UnionRect(origRect, destRect);
+		//TRACE("BPRect: (%d, %d)\t(%d, %d)\n", bpRect.left, bpRect.top, bpRect.right, bpRect.bottom);
+		CRect mRect = mike.getMonsterRect();
+		//TRACE("mRect: (%d, %d)\n", mRect.left, mRect.top);
+		bool bphase_pass = (bpRect.left > mRect.right || bpRect.right < mRect.left
+			|| bpRect.top > mRect.bottom || bpRect.bottom < mRect.top);
+		//if (!bphase_pass)
+			//TRACE("BPHASE COLLISION!\n");
+		return !bphase_pass;
+	}
+
+	float CBall::TightSweep(Monster mike)
+	{
+		const float dt = 0.001f;
+		float nfx, nfy;
+		int nx, ny;
+		CRect origRect(x, y, x + bmp_center.Width(), y + bmp_center.Height());
+		CRect destRect(origRect);
+		CRect mRect = mike.getMonsterRect();
+
+		for (auto j = 0; j < 1000; j++)
+		{
+			nfx = x + vx * j * dt;
+			nfy = y + vy * j * dt;
+
+			if (vx < 0)
+				nx = static_cast<int>(ceilf(nfx));
+			else
+				nx = static_cast<int>(floorf(nfx));
+			if (vy < 0)
+				ny = static_cast<int>(ceilf(nfy));
+			else
+				ny = static_cast<int>(floorf(nfy));
+
+			destRect.MoveToXY(nx, ny);
+			if (destRect.left <= mRect.right && destRect.right >= mRect.left
+				&& destRect.top <= mRect.bottom && destRect.bottom >= mRect.top)
+			{
+				is_alive = false;
+				return j * dt;
+			}
+		}
+		return 1.f;
 	}
 }

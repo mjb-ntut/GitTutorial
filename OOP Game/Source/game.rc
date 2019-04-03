@@ -130,7 +130,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDR_MAINFRAME           BITMAP                  "..\\res\\Toolbar.bmp"
 
-IDB_BORDER              BITMAP                  "..\\res\\bitmap3.bmp"
+IDB_BORDER1             BITMAP                  "..\\res\\bitmap3.bmp"
 
 IDB_BLUE                BITMAP                  "..\\res\\bmp00001.bmp"
 
@@ -142,7 +142,11 @@ IDB_TEST_MAP            BITMAP                  "..\\res\\Test-Map.bmp"
 
 IDB_MAP1A               BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\IceMan_Map1a.bmp"
 
-IDB_HERO                BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero.bmp"
+IDB_HERO_RIGHT          BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero_Right.bmp"
+
+IDB_HERO_LEFT           BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero_Left.bmp"
+
+IDB_BORDER2             BITMAP                  "..\\res\\bitmap5.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -297,11 +301,6 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// PNG
-//
 
 /////////////////////////////////////////////////////////////////////////////
 //

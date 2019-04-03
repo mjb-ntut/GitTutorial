@@ -2,6 +2,7 @@
 #define AABB_H
 
 #include "CGameMap.h"
+#include "LRDirection.h"
 
 namespace game_framework {
 	/****************** AABB Class Declaration *****************/
@@ -11,7 +12,7 @@ namespace game_framework {
 		AABB();
 		void OnMove(CGameMap*);
 		void OnShow(CGameMap*);
-		void LoadBitmap();
+		void AddBitmap(int, COLORREF);
 		int getX() const;
 		int getY() const;
 		float getVX() const;
@@ -19,8 +20,11 @@ namespace game_framework {
 		void setVX(float);
 		void setVY(float);
 		void SetTopLeft(int, int);
+		void Reset();
+		LRDirection direction;
 	private:
-		CMovingBitmap bmp;
+		list<CMovingBitmap> bmp;
+		list<CMovingBitmap>::iterator bmp_iter;
 		bool BroadPhase(CGameMap*, float&);
 		bool TightSweep(CGameMap*, float&);
 		void UpdateLocation(float);

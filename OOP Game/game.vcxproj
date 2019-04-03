@@ -22,6 +22,7 @@
     <ProjectGuid>{DDD280D7-4B85-4B03-BBC4-C46CA9BECCCB}</ProjectGuid>
     <RootNamespace>game</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <ProjectName />
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'" Label="Configuration">
@@ -277,11 +278,13 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Source\LRDirection.cpp" />
     <ClCompile Include="Source\MainFrm.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Source\Monster.cpp" />
     <ClCompile Include="Source\StdAfx.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -312,7 +315,9 @@
     <ClInclude Include="Source\game.h" />
     <ClInclude Include="Source\gameDoc.h" />
     <ClInclude Include="Source\gameView.h" />
+    <ClInclude Include="Source\LRDirection.h" />
     <ClInclude Include="Source\MainFrm.h" />
+    <ClInclude Include="Source\Monster.h" />
     <ClInclude Include="Source\Resource.h" />
     <ClInclude Include="Source\StdAfx.h" />
     <ClInclude Include="Source\gamelib.h" />
@@ -330,6 +335,8 @@
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\IceMan_Map_Part1.bmp" />
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan-IceMan-StartPage.bmp" />
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero.bmp" />
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero_Left.bmp" />
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero_Right.bmp" />
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Test-Map.bmp" />
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.bmp" />
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.png" />

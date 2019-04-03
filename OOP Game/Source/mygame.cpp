@@ -181,23 +181,75 @@ namespace game_framework
 
 	void CGameStateRun::OnMove()
 	{
+		// clear each CBall Collision list
+		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			i->collisions.clear();
+		
+		// calculate collision list for each CBall instance
+		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			for(auto j = monster_mash.begin(); j != monster_mash.end(); j++)
+			{ 
+				if(j->getAlive() && j->OnScreen(&gamemap))
+					if (i->BroadPhase(*j))
+					{
+						float collision_time = i->TightSweep(*j);
+						if ((1.f - collision_time) > 0.001f)
+							i->collisions.push_back(pair<int, float>(j->monsterID, collision_time));
+					}
+			}
+	
+		// sorts each CBall Collision List in ascending order
+		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			i->collisions.sort(); //NEED TO WRITE THE SORT COMPARATOR
+			
+
+		
+		list<CBall>::iterator it;
+		for(;;)
+		{
+			 it = ball_list.end();
+			 
+			for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			{
+				if (it != ball_list.end() && !i->collisions.empty())
+				{
+					if ((*(it->collisions.begin())).second < (*(i->collisions.begin())).second)
+						it = i;
+				}
+				if (it == ball_list.end() && !i->collisions.empty())
+				{
+					it = i;
+				}	
+			}
+			if (it == ball_list.end())
+				break;
+			else
+				//hit monster, etc.
+				ball_list.erase(it);
+
+			for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			{
+				while (!i->collisions.empty())
+				{
+					if (!monster_mash[(*(i->collisions.begin())).first].getAlive())
+					{
+						i->collisions.pop_front();
+					}
+				}
+			}
+
+		} 
+
+		
+
+		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
+			i->OnMove();
+
+		hero.OnMove(&gamemap);
+
 		//Example of Game Cursor If Neeeded
 		//SetCursor(AfxGetApp()->LoadCursor(IDC_GAMECURSOR));
 		
-		//AABB OnMove
-		hero.OnMove(&gamemap);
-		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
-			i->OnMove();
-		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
-			if (i->OffScreen(&gamemap))
-				i->SetIsAlive(false);
-		for (auto i = ball_list.begin(), j = ball_list.begin(); i != ball_list.end();)
-			if (!i->IsAlive())
-				i = ball_list.erase(i);
-			else
-				i++;
-				
-			
 		//Example of Switching Game States
 		//if (hits_left.GetInteger() <= 0) 	
 		//GotoGameState(GAME_STATE_OVER);
@@ -208,12 +260,29 @@ namespace game_framework
 		
 		ShowInitProgress(33);	// Display Initialization Progress at 33%
 		gamemap.LoadBitmap();
-		hero.LoadBitmap();
-		//
+		hero.AddBitmap(IDB_HERO_LEFT, RGB(255, 0, 0));
+		hero.AddBitmap(IDB_HERO_RIGHT, RGB(255, 0, 0));
+		
+		monster_mash.reserve(4);
+		monster_mash.resize(2);
+		monsters_of_interest.reserve(4);
+		monster_mash[0] = Monster(640, 240);
+		monster_mash[0].monsterID = 0;
+		monster_mash[1] = Monster(1260, 140);
+		monster_mash[1].monsterID = 1;
+		TRACE("monster_mash capacity: %d\n", monster_mash.capacity());
+		TRACE("monster_mash size: %d\n", monster_mash.size());
+		for (auto i = monster_mash.begin(); i != monster_mash.end(); i++)
+		{
+			i->AddBitmap(IDB_BORDER1, RGB(255, 255, 255));
+			i->AddBitmap(IDB_BORDER2, RGB(255, 255, 255));
+		}
+			
+
 		ShowInitProgress(50);	// Display Initialization Progress at 50%
 		Sleep(300); 
 		
-		help.LoadBitmap(IDB_HELP, RGB(255, 255, 255));	
+		help.LoadBitmap(IDB_HELP, RGB(255, 255, 255));
 		
 		//Load Audio Instance (Example)
 		//CAudio::Instance()->Load(AUDIO_DING, "sounds\\ding.wav");
@@ -228,27 +297,58 @@ namespace game_framework
 		const char KEY_DOWN = 40;
 		const char KEY_SPACE = ' ';
 		const char KEY_SHIFT = 0x10;
-		TRACE("nChar == %d\n", nChar);
+		
+		//TRACE("nChar == %d\n", nChar);
 		if (nChar == KEY_LEFT)
 		{
-			TRACE("KEY_LEFT DOWN\n");
+			//TRACE("KEY_LEFT DOWN\n");
 			hero.setVX(-4.f);
+			isDownLeftKey = true;
+			hero.direction.SetFlag(nChar);
 		}
 			
 		if (nChar == KEY_RIGHT)
 		{
-			TRACE("KEY_RIGHT DOWN\n");
+			//TRACE("KEY_RIGHT DOWN\n");
 			hero.setVX(4.f);
+			isDownRightKey = true;
+			hero.direction.SetFlag(nChar);
 		}	
 		if (nChar == KEY_UP)
-			hero.setVY(0.f);
+		{
+			isDownUpKey = true;
+		}
 		if (nChar == KEY_DOWN)
+		{
+			isDownDownKey = true;
 			hero.setVY(1.f);
+		}
+			
 		//if (nChar == KEY_SPACE)
 		if (nChar == KEY_SHIFT)
 		{
-			TRACE("KEY_SHIFT DOWN\n");
+			
+			//TRACE("KEY_SHIFT DOWN\n");
 			CBall b;
+			if (isDownDownKey && !isDownUpKey) //Good
+				b.SetVY(5);
+			if (isDownUpKey && !isDownDownKey) //Good
+				b.SetVY(-5);
+			if (isDownUpKey == isDownDownKey && isDownLeftKey == isDownRightKey)
+			{
+				if (hero.direction.getDirection())
+					b.SetVX(5);
+				else
+					b.SetVX(-5);
+			}
+			else if (!isDownLeftKey && isDownRightKey)
+				b.SetVX(5);
+			else if (isDownLeftKey && !isDownRightKey)
+				b.SetVX(-5);
+			else
+				b.SetVX(0);
+
+			//TRACE("Ball Vel: (%d, %d)\n", b.GetVX(), b.GetVY());
 			b.LoadBitmap();
 			b.SetXY(hero.getX(), hero.getY());
 			ball_list.push_back(b);
@@ -263,17 +363,31 @@ namespace game_framework
 		const char KEY_DOWN = 40;
 		const char KEY_SPACE = ' ';
 		if (nChar == KEY_LEFT)
+		{
+			isDownLeftKey = false;
 			hero.setVX(0.f);
+			hero.direction.ResetFlag(nChar);
+		}
 		if (nChar == KEY_RIGHT)
+		{
+			isDownRightKey = false;
 			hero.setVX(0.f);
+			hero.direction.ResetFlag(nChar);
+		}
 		if (nChar == KEY_UP)
-			hero.setVY(0.f);
+		{
+			isDownUpKey = false;
+			//hero.setVY(0.f);
+		}
 		if (nChar == KEY_DOWN)
+		{
+			isDownDownKey = false;
 			hero.setVY(0.f);
+		}
 		if (nChar == KEY_SPACE)
 		{
 			//Initialize AABB Velocity (vx, vy)
-			TRACE("KEY_SPACE_UP\n");
+			//TRACE("KEY_SPACE_UP\n");
 			//hero.setVX(0.f);
 			hero.setVY(-15.f);
 		}
@@ -310,8 +424,9 @@ namespace game_framework
 
 		for (auto i = ball_list.begin(); i != ball_list.end(); i++)
 			i->OnShow(&gamemap);
-		//hero.setVX(0.f);
-		//hero.setVY(0.f);
+		
+		for (auto i = monster_mash.begin(); i != monster_mash.end(); i++)
+			i->OnShow(&gamemap);
 	}
 
 } //namespace game_framework

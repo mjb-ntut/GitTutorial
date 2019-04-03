@@ -133,6 +133,12 @@
     <ClCompile Include="Source\AABB.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LRDirection.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Monster.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio.h">
@@ -172,6 +178,12 @@
       <Filter>MyGame</Filter>
     </ClInclude>
     <ClInclude Include="Source\AABB.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LRDirection.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Monster.h">
       <Filter>MyGame</Filter>
     </ClInclude>
   </ItemGroup>
@@ -249,6 +261,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero_Left.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero_Right.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
