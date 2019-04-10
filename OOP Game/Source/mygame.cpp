@@ -389,7 +389,8 @@ namespace game_framework
 			//Initialize AABB Velocity (vx, vy)
 			//TRACE("KEY_SPACE_UP\n");
 			//hero.setVX(0.f);
-			hero.setVY(-15.f);
+			if(hero.OnGround(&gamemap))
+				hero.setVY(-15.f);
 		}
 	}
 

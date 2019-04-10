@@ -12,9 +12,9 @@ namespace game_framework {
 	/****************** CBall Class Declaration *****************/
 	CBall::CBall()
 	{
-		is_alive = true;
 		x = y = dx = dy = index = delay_counter = 0;
 		vx = 0; vy = 0;
+		is_alive = true;
 	}
 
 	bool CBall::HitRectangle(int tx1, int ty1, int tx2, int ty2)
@@ -123,22 +123,19 @@ namespace game_framework {
 
 	bool CBall::BroadPhase(Monster mike)
 	{
-		//SHOULD MONSTER BE SWITCHED TO CONSTANT REFERENCE
 		CRect origRect(x, y, x + bmp_center.Width(), y + bmp_center.Height());
-		origRect.NormalizeRect();
-		
+	
 		CRect destRect(origRect);
 		destRect.MoveToXY(origRect.left + vx, origRect.top + vy);
-		//TRACE("Rect(O->D): (%d, %d)\t(%d, %d)\n", origRect.left, origRect.top, destRect.left, destRect.top);
+		
 		CRect bpRect;
 		bpRect.UnionRect(origRect, destRect);
-		//TRACE("BPRect: (%d, %d)\t(%d, %d)\n", bpRect.left, bpRect.top, bpRect.right, bpRect.bottom);
+
 		CRect mRect = mike.getMonsterRect();
-		//TRACE("mRect: (%d, %d)\n", mRect.left, mRect.top);
+
 		bool bphase_pass = (bpRect.left > mRect.right || bpRect.right < mRect.left
 			|| bpRect.top > mRect.bottom || bpRect.bottom < mRect.top);
-		//if (!bphase_pass)
-			//TRACE("BPHASE COLLISION!\n");
+	
 		return !bphase_pass;
 	}
 

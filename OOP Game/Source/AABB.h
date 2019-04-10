@@ -20,6 +20,7 @@ namespace game_framework {
 		void setVX(float);
 		void setVY(float);
 		void SetTopLeft(int, int);
+		bool OnGround(CGameMap*);
 		void Reset();
 		LRDirection direction;
 	private:

@@ -94,7 +94,6 @@
     <None Include="res\Toolbar.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\audio.cpp">
@@ -137,6 +136,9 @@
       <Filter>MyGame</Filter>
     </ClCompile>
     <ClCompile Include="Source\Monster.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
+    <ClCompile Include="CMovingRect.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
   </ItemGroup>
@@ -184,6 +186,9 @@
       <Filter>MyGame</Filter>
     </ClInclude>
     <ClInclude Include="Source\Monster.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="CMovingRect.h">
       <Filter>MyGame</Filter>
     </ClInclude>
   </ItemGroup>
@@ -244,7 +249,6 @@
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.png" />
     <Image Include="res\bitmap5.bmp">
       <Filter>Resource Files</Filter>
     </Image>

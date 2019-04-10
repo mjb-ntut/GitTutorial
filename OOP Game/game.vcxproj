@@ -229,7 +229,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="Res\ball.bmp" />
     <None Include="RES\bmp0.bmp" />
     <None Include="RES\bmp1.bmp" />
@@ -258,6 +257,7 @@
     <None Include="res\Toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CMovingRect.cpp" />
     <ClCompile Include="Source\AABB.cpp" />
     <ClCompile Include="Source\audio.cpp" />
     <ClCompile Include="Source\CBall.cpp" />
@@ -307,6 +307,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CMovingRect.h" />
     <ClInclude Include="Source\AABB.h" />
     <ClInclude Include="Source\audio.h" />
     <ClInclude Include="Source\CBall.h" />
@@ -339,7 +340,6 @@
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\MegaMan_Hero_Right.bmp" />
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Test-Map.bmp" />
     <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.bmp" />
-    <Image Include="..\..\..\OOP Lab\Ice Man Level Map\Untitled.png" />
     <Image Include="..\Documents\OOP Lab\Ice Man Level Map\MegaMan-IceMan-StartPage.bmp" />
     <Image Include="..\Documents\OOP Lab\Ice Man Level Map\Test-Map.bmp" />
     <Image Include="res\bitmap10.bmp" />
