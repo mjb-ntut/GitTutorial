@@ -43,8 +43,6 @@
 #include "CGameMap.h"
 #include "Rectangle.h"
 #include "AABB.h"
-#include "LRDirection.h"
-#include "Monster.h"
 
 namespace game_framework {
 	
@@ -87,18 +85,11 @@ namespace game_framework {
 	protected:
 		void OnMove();									//
 		void OnShow();									//
-		bool single_digit(const CBall& value) { return (!(value.IsAlive())); }
 	private:
 		CGameMap		gamemap;
 		CMovingBitmap	help;			
 		AABB hero;
 		list<CBall> ball_list;
-		vector<Monster> monster_mash;
-		vector<int> monsters_of_interest;
-		bool isDownDownKey = false;
-		bool isDownUpKey = false;
-		bool isDownLeftKey = false;
-		bool isDownRightKey = false;
 	};
 
 	/****************** GameStateOver Class Declaration *****************/
@@ -114,4 +105,4 @@ namespace game_framework {
 		int counter;	
 	};
 
-}//namespace game_framework
+}
