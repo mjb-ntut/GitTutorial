@@ -51,7 +51,7 @@ namespace game_framework {
 	{
 		//Change To More General Case Where Any Bitmap Can Be Loaded
 		bmp.LoadBitmap(IDB_HERO, RGB(228,0,88));
-		bmp_T.AddBitmap();
+		//bmp_T.AddBitmap();
 	}
 
 	float AABB::getVX() const
