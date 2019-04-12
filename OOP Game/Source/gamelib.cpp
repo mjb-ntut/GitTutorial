@@ -126,15 +126,7 @@
 #include "mygame.h"
 
 namespace game_framework {
-
-/////////////////////////////////////////////////////////////////////////////
-// CAnimation: 
-// 1. ­
-// 2. 
-// 3.
-//  
-/////////////////////////////////////////////////////////////////////////////
-
+	/****************** CAnimation Class Definition *****************/
 CAnimation::CAnimation(int count)
 {
 	delay_count = count;

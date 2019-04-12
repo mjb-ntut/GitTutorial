@@ -130,7 +130,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDR_MAINFRAME           BITMAP                  "..\\res\\Toolbar.bmp"
 
-IDB_BORDER              BITMAP                  "..\\res\\bitmap3.bmp"
+IDB_BORDER1             BITMAP                  "..\\res\\bitmap3.bmp"
 
 IDB_BLUE                BITMAP                  "..\\res\\bmp00001.bmp"
 
@@ -140,9 +140,13 @@ IDB_BACKGROUND2         BITMAP                  "..\\res\\MegaMan-IceMan-StartPa
 
 IDB_TEST_MAP            BITMAP                  "..\\res\\Test-Map.bmp"
 
-IDB_MAP1A               BITMAP                  "..\\res\\WoodMan-Map1.bmp"
+IDB_MAP1A               BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\IceMan_Map1a.bmp"
 
-IDB_HERO                BITMAP                  "..\\res\\MegaStand.bmp"
+IDB_HERO_RIGHT          BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero_Right.bmp"
+
+IDB_HERO_LEFT           BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero_Left.bmp"
+
+IDB_BORDER2             BITMAP                  "..\\res\\bitmap5.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -430,30 +434,6 @@ BEGIN
 END
 
 #endif    // English (United States) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// English (Caribbean) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENB)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CARIBBEAN
-#pragma code_page(1252)
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_BITMAP7             BITMAP                  "C:\\Users\\grey\\Documents\\GitHub\\GitTutorial\\OOP Game\\RES\\Mega Run1.bmp"
-
-IDB_BITMAP8             BITMAP                  "C:\\Users\\grey\\Documents\\GitHub\\GitTutorial\\OOP Game\\RES\\Mega Run2.bmp"
-
-IDB_BITMAP9             BITMAP                  "C:\\Users\\grey\\Documents\\GitHub\\GitTutorial\\OOP Game\\RES\\Mega Run3.bmp"
-
-IDB_BITMAP10            BITMAP                  "C:\\Users\\grey\\Documents\\GitHub\\GitTutorial\\OOP Game\\RES\\Mega Run4.bmp"
-
-#endif    // English (Caribbean) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

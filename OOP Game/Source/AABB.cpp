@@ -35,7 +35,7 @@ namespace game_framework {
 			CRUpdateVelocity(map);
 	
 		}
-		TRACE("OnMove() Loc: (%d, %d)\n", x, y);
+		//TRACE("OnMove() Loc: (%d, %d)\n", x, y);
 		//Move Map to Accomodate Hero @ New Coordinates
 		map->setSY(0);
 		map->setSX(x);
@@ -43,15 +43,40 @@ namespace game_framework {
 
 	void AABB::OnShow(CGameMap *map)
 	{
-		bmp.SetTopLeft(map->getScreenX(x), map->getScreenY(y));
-		bmp.ShowBitmap();
+		if (direction.getDirection())
+		{
+			bmp_iter = bmp.begin();
+			bmp_iter++;
+		}
+		else
+			bmp_iter = bmp.begin();
+		bmp_iter->SetTopLeft(map->getScreenX(x), map->getScreenY(y));
+		bmp_iter->ShowBitmap();
 	}
 
-	void AABB::LoadBitmap()
+	void AABB::Reset()
+	{
+		GAME_ASSERT(bmp.size() != 0, "CAnimation: Bitmaps must be loaded first.");
+		bmp_iter = bmp.begin();
+	}
+
+	void AABB::AddBitmap(int IDB_BITMAP, COLORREF colorkey)
 	{
 		//Change To More General Case Where Any Bitmap Can Be Loaded
-		bmp.LoadBitmap(IDB_HERO, RGB(228,0,88));
-		bmp_T.AddBitmap();
+		CMovingBitmap add_bmp;
+		add_bmp.LoadBitmap(IDB_BITMAP, colorkey);
+		bmp.insert(bmp.end(), add_bmp);
+		Reset();
+	}
+
+	int AABB::getX() const
+	{
+		return x;
+	}
+
+	int AABB::getY() const
+	{
+		return y;
 	}
 
 	float AABB::getVX() const
@@ -86,7 +111,7 @@ namespace game_framework {
 	{
 		float time_r = 1.f - time_elapsed;
 
-		CRect origRect(x, y, x + bmp.Width(), y + bmp.Height());
+		CRect origRect(x, y, x + bmp_iter->Width(), y + bmp_iter->Height());
 		origRect.NormalizeRect();
 		
 		pair<int, int> nnc;
@@ -118,7 +143,7 @@ namespace game_framework {
 	{
 		const float dt = 0.001f;
 		
-		CRect origRect(x, y, x + bmp.Width(), y + bmp.Height());
+		CRect origRect(x, y, x + bmp_iter->Width(), y + bmp_iter->Height());
 		origRect.NormalizeRect();
 
 		CRect destRect(origRect);
@@ -164,7 +189,7 @@ namespace game_framework {
 	void AABB::CRUpdateVelocity(CGameMap *map)
 	{
 		
-		CRect testRect(CPoint(x, y), CSize(bmp.Width(), bmp.Height()));
+		CRect testRect(CPoint(x, y), CSize(bmp_iter->Width(), bmp_iter->Height()));
 		testRect.NormalizeRect();
 
 		//Left Side Collision Test

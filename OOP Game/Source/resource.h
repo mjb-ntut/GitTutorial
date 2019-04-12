@@ -36,6 +36,7 @@
 #define IDB_BITMAP2                     156
 #define IDB_LOADING                     156
 #define IDB_BORDER                      167
+#define IDB_BORDER1                     167
 #define IDB_PRACTICE                    168
 #define IDB_BLUE                        169
 #define IDB_GREEN                       170
@@ -47,12 +48,11 @@
 #define IDB_BITMAP4                     181
 #define IDB_MAP1A                       183
 #define IDB_BITMAP6                     184
-#define IDB_BITMAP5                     185
-#define IDB_HERO                        185
-#define IDB_BITMAP7                     187
-#define IDB_BITMAP8                     188
-#define IDB_BITMAP9                     189
-#define IDB_BITMAP10                    190
+#define IDB_HERO                        184
+#define IDB_HERO_RIGHT                  185
+#define IDB_HERO_LEFT                   186
+#define IDB_BITMAP5                     187
+#define IDB_BORDER2                     187
 #define IDC_README                      1001
 #define ID_FILE_PAUSE                   32771
 #define ID_TOGGLE_FULLSCREEN            32772
@@ -65,7 +65,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        191
+#define _APS_NEXT_RESOURCE_VALUE        188
 #define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1003
 #define _APS_NEXT_SYMED_VALUE           102

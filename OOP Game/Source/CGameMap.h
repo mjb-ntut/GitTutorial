@@ -27,10 +27,10 @@ namespace game_framework {
 
 	private:
 		CMovingBitmap map;
-		int map_blocks[30][160]; // map blocks 
+		int map_blocks[15][58]; // map blocks 
 		int sx, sy; // screen top-left corner coordinates (sx, sy) in map pixel coordinates 
-		const int BW = 16, BH = 16; // BW: map block width BH: map block height
-		const int MAP_MIN_X = 0, MAP_MAX_X = 2560;
+		const int BW = 32, BH = 32; // BW: map block width BH: map block height
+		const int MAP_MIN_X = 0, MAP_MAX_X = 1856;
 		const int MAP_MIN_Y = 0, MAP_MAX_Y = 480;
 	};
 }
