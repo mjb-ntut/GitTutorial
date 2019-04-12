@@ -140,11 +140,11 @@ IDB_BACKGROUND2         BITMAP                  "..\\res\\MegaMan-IceMan-StartPa
 
 IDB_TEST_MAP            BITMAP                  "..\\res\\Test-Map.bmp"
 
-IDB_MAP1A               BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\IceMan_Map1a.bmp"
+IDB_MAP1A               BITMAP                  "..\\res\\WoodMan-Map1.bmp"
 
-IDB_HERO_RIGHT          BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero_Right.bmp"
+IDB_HERO_RIGHT          BITMAP                  "..\\res\\MegaStand.bmp"
 
-IDB_HERO_LEFT           BITMAP                  "C:\\Users\\Matthew\\Documents\\OOP Lab\\Ice Man Level Map\\MegaMan_Hero_Left.bmp"
+IDB_HERO_LEFT           BITMAP                  "..\\res\\MegaStandL.bmp"
 
 IDB_BORDER2             BITMAP                  "..\\res\\bitmap5.bmp"
 
