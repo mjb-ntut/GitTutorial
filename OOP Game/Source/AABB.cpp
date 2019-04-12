@@ -251,7 +251,7 @@ namespace game_framework {
 		else
 			nnc.second = static_cast<int>(floorf(nfc.second));
 	}
-
+	/**/
 	bool AABB::OnGround(CGameMap *m)
 	{
 		return(!m->isEmpty(x, y + 49) || !m->isEmpty(x + 44, y + 49));
